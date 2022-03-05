@@ -1,5 +1,5 @@
 ﻿using DeviceManager.Business.Interfaces;
-using DeviceManager.Data.Models.Entities;
+using DeviceManager.Data.Models.Entities.User;
 using DeviceManager.Repository.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;

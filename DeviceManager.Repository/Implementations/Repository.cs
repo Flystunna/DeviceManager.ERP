@@ -237,6 +237,18 @@ namespace DeviceManager.Repository.Implementations
 
             return await query.FirstOrDefaultAsync(filter);
         }
+        public async Task<TEntity> GetAsyncAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _entity;
+
+            if (includeProperties != null)
+            {
+                query = includeProperties.Aggregate(query,
+                          (current, include) => current.Include(include));
+            }
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(filter);
+        }
         #endregion
 
         #region Update

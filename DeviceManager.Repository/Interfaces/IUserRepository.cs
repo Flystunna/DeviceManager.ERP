@@ -1,9 +1,4 @@
-﻿using DeviceManager.Data.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DeviceManager.Data.Models.Entities.User;
 
 namespace DeviceManager.Repository.Interfaces
 {

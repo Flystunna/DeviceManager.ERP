@@ -42,15 +42,8 @@ namespace IPagedList
             PageCount = TotalItemCount > 0
                         ? (int)Math.Ceiling(TotalItemCount / (double)PageSize)
                         : 0;
-            //HasPreviousPage = PageNumber > 1;
-            //HasNextPage = PageNumber < PageCount;
-            //IsFirstPage = PageNumber == 1;
-            //IsLastPage = PageNumber >= PageCount;
-            //FirstItemOnPage = (PageNumber - 1) * PageSize + 1;
-            //var numberOfLastItemOnPage = FirstItemOnPage + PageSize - 1;
-            //LastItemOnPage = numberOfLastItemOnPage > TotalItemCount
-            //                ? TotalItemCount
-            //                : numberOfLastItemOnPage;
+            HasPreviousPage = PageNumber > 1;
+            HasNextPage = PageNumber < PageCount;
 
             // add items to internal list
             if (superset != null && TotalItemCount > 0)

@@ -1,4 +1,4 @@
-﻿using DeviceManager.Data.Models.Entities;
+﻿using DeviceManager.Data.Models.Entities.User;
 using DeviceManager.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

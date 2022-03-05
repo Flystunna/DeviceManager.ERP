@@ -1,6 +1,6 @@
 ﻿using DeviceManager.Business.Interfaces;
 using DeviceManager.Core.ExceptionHelpers;
-using DeviceManager.Data.Models.Entities;
+using DeviceManager.Data.Models.Entities.User;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;

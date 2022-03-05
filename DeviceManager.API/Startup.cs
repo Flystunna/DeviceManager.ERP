@@ -1,5 +1,6 @@
 using DeviceManager.Core.Utils;
 using DeviceManager.Data.Models.Entities;
+using DeviceManager.Data.Models.Entities.User;
 using DeviceManager.Domain;
 using DeviceManager.Repository.Implementations;
 using DeviceManager.Repository.Interfaces;

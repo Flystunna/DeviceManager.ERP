@@ -44,6 +44,7 @@ namespace DeviceManager.Repository.Interfaces
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter);
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<TEntity> GetAsyncAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties);
         TEntity GetById(object id);
         Task<TEntity> GetByIdAsync(object id);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);

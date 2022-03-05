@@ -1,10 +1,5 @@
 ﻿using DeviceManager.Data.Models.Auditing;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeviceManager.Data.Models.Entities
 {
@@ -16,6 +11,8 @@ namespace DeviceManager.Data.Models.Entities
         public string Name { get; set; }
         public long? StatusId { get; set; }
         public virtual DeviceStatus Status { get; set; }
+        public long? DeviceTypeId { get; set; }
+        public virtual DeviceType DeviceType { get; set; }
         public double Temperature { get; set; } 
     }
 }

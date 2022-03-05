@@ -1,4 +1,4 @@
-﻿using DeviceManager.Data.Models.Entities;
+﻿using DeviceManager.Data.Models.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;

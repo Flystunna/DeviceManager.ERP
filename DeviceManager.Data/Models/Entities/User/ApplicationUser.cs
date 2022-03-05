@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 
-namespace DeviceManager.Data.Models.Entities
+namespace DeviceManager.Data.Models.Entities.User
 {
     public class ApplicationUser: IdentityUser<long>
     {

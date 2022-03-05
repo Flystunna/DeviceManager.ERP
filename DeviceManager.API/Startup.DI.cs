@@ -18,7 +18,10 @@ namespace DeviceManager.API
         public static void ConfigureDIRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IDeviceTypeRepository, DeviceTypeRepository>();
             services.AddScoped<IDeviceRepository, DeviceRepository>();
+            services.AddScoped<IDeviceStatusLogRepository, DeviceStatusLogRepository>();
+            services.AddScoped<IDeviceStatusRepository, DeviceStatusRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
         }
         public static void ConfigureDIServices(this IServiceCollection services)
@@ -29,7 +32,10 @@ namespace DeviceManager.API
             services.AddTransient<IUserService, UserService>();
 
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IDeviceTypeService, DeviceTypeService>();
             services.AddScoped<IDeviceService, DeviceService>();
+            services.AddScoped<IDeviceStatusLogService, DeviceStatusLogService>();
+            services.AddScoped<IDeviceStatusService, DeviceStatusService>();
             
             #endregion
         }
