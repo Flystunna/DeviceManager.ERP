@@ -8,7 +8,7 @@ namespace DeviceManager.Data.Models.Dtos.Post
 {
     public class PostDeviceStatusLogDto
     {
-        public long? DeviceId { get; set; }
-        public long? StatusId { get; set; }
+        public long DeviceId { get; set; }
+        public long DeviceStatusId { get; set; }
     }
 }

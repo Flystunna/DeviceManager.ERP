@@ -1,9 +1,11 @@
 ﻿using DeviceManager.Business.Implementations;
 using DeviceManager.Business.Interfaces;
+using DeviceManager.Data.Models.Dtos.Get;
 using IPagedList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DeviceManager.API.Controllers.v1
@@ -71,6 +73,24 @@ namespace DeviceManager.API.Controllers.v1
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceSvc.GetAsync(id);
                 return new ServiceResponse<Data.Models.Dtos.Get.GetDeviceDto>
+                {
+                    Object = responseOBJ
+                };
+            });
+        }
+
+        /// <summary>
+        /// Get Similar Devices 
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetSimilarDevices/{deviceId}")]
+        public async Task<IServiceResponse<List<GetSimilarDeviceDto>>> GetSimilarDevices(long deviceId)
+        {
+            return await HandleApiOperationAsync(async () => {
+                var responseOBJ = await _deviceSvc.GetSimilarDevices(deviceId);
+                return new ServiceResponse<List<GetSimilarDeviceDto>>
                 {
                     Object = responseOBJ
                 };

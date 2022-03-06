@@ -9,6 +9,6 @@ namespace DeviceManager.Data.Models.Dtos.Put
     public class PutDeviceStatusLogDto
     {
         public long? DeviceId { get; set; }
-        public long? StatusId { get; set; }
+        public long? DeviceStatusId { get; set; }
     }
 }

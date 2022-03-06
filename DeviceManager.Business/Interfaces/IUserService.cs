@@ -1,4 +1,5 @@
-﻿using DeviceManager.Data.Models.Entities.User;
+﻿using DeviceManager.Data.Models.Dtos.Post;
+using DeviceManager.Data.Models.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace DeviceManager.Business.Interfaces
         Task<ApplicationUser> FindByNameAsync(string username);
         Task<string> FindEmailByIdAsync(string userId);
         Task<ApplicationUser> FindByIdAsync(string userId);
+        Task<bool> RegisterUserAsync(PostNewUserDto model);
         Task<IdentityResult> CreateAsync(ApplicationUser user, string password);
         Task<IdentityResult> CreateAsync(ApplicationUser user);
         Task<IdentityResult> UpdateAsync(ApplicationUser user);

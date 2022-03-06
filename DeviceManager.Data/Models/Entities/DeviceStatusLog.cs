@@ -12,9 +12,9 @@ namespace DeviceManager.Data.Models.Entities
     {
         [Key]
         public long Id { get; set; } 
-        public long? DeviceId { get; set; }
+        public long DeviceId { get; set; }
         public virtual Device Device { get; set; }
-        public long? StatusId { get; set; }
-        public virtual DeviceStatus Status { get; set; }
+        public long DeviceStatusId { get; set; }
+        public virtual DeviceStatus DeviceStatus { get; set; }
     }
 }

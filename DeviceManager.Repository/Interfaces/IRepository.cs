@@ -35,6 +35,7 @@ namespace DeviceManager.Repository.Interfaces
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<TEntity, bool>> filter);
         TEntity Get(Expression<Func<TEntity, bool>> filter);
+        TEntity GetAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties);
         TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null);
         TEntity LastOrDefault(Expression<Func<TEntity, bool>> filter = null);
 

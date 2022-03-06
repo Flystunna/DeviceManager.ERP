@@ -60,6 +60,7 @@ namespace DeviceManager.API.Controllers.v1
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [Route("RefreshToken")]
         public async Task<IServiceResponse<Data.Models.Dtos.Get.GetLoginDto>> Refresh(Data.Models.Dtos.Post.PostLoginRefreshDto model)

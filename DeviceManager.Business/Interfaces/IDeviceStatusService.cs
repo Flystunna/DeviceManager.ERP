@@ -13,5 +13,6 @@ namespace DeviceManager.Business.Interfaces
         Task<GetDeviceStatusDto> GetAsync(long Id);
         Task<bool> UpdateAsync(long Id, PutDeviceStatusDto model);
         Task<bool> DeleteAsync(long id);
+        Task<bool> IfExists(long Id);
     }
 }

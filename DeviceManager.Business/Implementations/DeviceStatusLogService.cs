@@ -3,6 +3,7 @@ using DeviceManager.Core.ExceptionHelpers;
 using DeviceManager.Data.Models.Dtos.Get;
 using DeviceManager.Data.Models.Dtos.Post;
 using DeviceManager.Data.Models.Dtos.Put;
+using DeviceManager.Data.Models.Entities;
 using DeviceManager.Repository.Interfaces;
 using IPagedList;
 using Microsoft.AspNetCore.Http;
@@ -15,24 +16,26 @@ using System.Threading.Tasks;
 
 namespace DeviceManager.Business.Implementations
 {
-    public class DeviceStatusLogService: IDeviceStatusLogService    
+    public class DeviceStatusLogService : IDeviceStatusLogService
     {
         private readonly IDeviceStatusLogRepository _deviceStatusLogRepo;
+        private readonly IDeviceStatusRepository _deviceStatusRepo;
         private readonly IServiceHelper _svcHelper;
-        public DeviceStatusLogService(IDeviceStatusLogRepository deviceStatusLogRepo, IServiceHelper svcHelper)
+        public DeviceStatusLogService(IDeviceStatusLogRepository deviceStatusLogRepo, IDeviceStatusRepository deviceStatusRepo, IServiceHelper svcHelper)
         {
             _deviceStatusLogRepo = deviceStatusLogRepo;
+            _deviceStatusRepo = deviceStatusRepo;
             _svcHelper = svcHelper;
         }
         public async Task<bool> AddAsync(PostDeviceStatusLogDto model)
         {
             try
             {
-                var add = await _deviceStatusLogRepo.AddAsync(new Data.Models.Entities.DeviceStatusLog
+                await _deviceStatusLogRepo.InsertAsync(new DeviceStatusLog
                 {
                     CreationTime = DateTime.Now,
                     CreatorUserId = _svcHelper.GetCurrentUserId(),
-                    StatusId = model.StatusId,
+                    DeviceStatusId = model.DeviceStatusId,
                     DeviceId = model.DeviceId
                 });
                 return true;
@@ -50,7 +53,7 @@ namespace DeviceManager.Business.Implementations
                 var getall = await GetAllAsync();
                 if (!string.IsNullOrEmpty(query) && !string.IsNullOrWhiteSpace(query))
                 {
-                    getall = getall.Where(c => c.Status.ToLower() == query.ToLower() || c.Device.ToLower() == query.ToLower()).ToList();
+                    getall = getall.Where(c => c.DeviceStatus.ToLower().Contains(query.ToLower()) || c.Device.ToLower().Contains(query.ToLower())).ToList();
                 }
                 return await getall.AsQueryable().ToPagedListAsync(pageNumber, pageSize);
             }
@@ -65,7 +68,7 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c => c.Id == Id && c.IsDeleted == false, c => c.Status);
+                var deviceStatusLog = await _deviceStatusLogRepo.GetAsyncAsNoTracking(c => c.Id == Id && c.IsDeleted == false, x => x.DeviceStatus, y => y.Device);
                 if (deviceStatusLog != null)
                 {
                     return new GetDeviceStatusLogDto
@@ -76,10 +79,10 @@ namespace DeviceManager.Business.Implementations
                         LastModificationTime = deviceStatusLog.LastModificationTime,
                         LastModifierUserId = deviceStatusLog.LastModifierUserId,
 
-                        Status = deviceStatusLog.Status?.IsDeleted == false ? deviceStatusLog.Status?.Status : null,
-                        StatusId = deviceStatusLog.Status?.IsDeleted == false ? deviceStatusLog?.StatusId : null,
-                        Device = deviceStatusLog.Device?.IsDeleted == false ? deviceStatusLog.Device?.Name : null,
-                        DeviceId = deviceStatusLog.Device?.IsDeleted == false ? deviceStatusLog?.DeviceId : null
+                        DeviceStatus = deviceStatusLog.DeviceStatus.IsDeleted == false ? deviceStatusLog.DeviceStatus.Status : null,
+                        DeviceStatusId = deviceStatusLog.DeviceStatus.IsDeleted == false ? deviceStatusLog.DeviceStatusId : null,
+                        Device = deviceStatusLog.Device.IsDeleted == false ? deviceStatusLog.Device.Name : null,
+                        DeviceId = deviceStatusLog.Device.IsDeleted == false ? deviceStatusLog.DeviceId : null
                     };
                 }
                 throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
@@ -90,7 +93,31 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-
+        public async Task<List<GetDeviceStatusActivityLogDto>> GetDeviceStatusActivityLog(long deviceId)
+        {
+            try
+            {
+                var devicelog = await _deviceStatusLogRepo.GetAll().Where(c => c.IsDeleted == false && c.DeviceId == deviceId).Include(c => c.DeviceStatus).ToListAsync();
+                if (devicelog != null)
+                {
+                    return devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Date })
+                        .Select(r => new GetDeviceStatusActivityLogDto
+                        {
+                            DeviceId = r.Key.DeviceId,
+                            DeviceStatusId = r.Key.DeviceStatusId,
+                            DeviceStatus = _deviceStatusRepo.LookUpDeviceStatusByDeviceStatusId(r.Key.DeviceStatusId),
+                            Date = r.Key.Date,
+                            Count = r.Count()
+                        }).ToList();
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToBetterString());
+                throw;
+            }
+        }
         public async Task<bool> UpdateAsync(long Id, PutDeviceStatusLogDto model)
         {
             try
@@ -98,8 +125,8 @@ namespace DeviceManager.Business.Implementations
                 var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c => c.Id == Id && c.IsDeleted == false);
                 if (deviceStatusLog != null)
                 {
-                    deviceStatusLog.StatusId = model.StatusId;
-                    deviceStatusLog.DeviceId = model.DeviceId;
+                    deviceStatusLog.DeviceStatusId = model.DeviceStatusId ?? deviceStatusLog.DeviceStatusId;
+                    deviceStatusLog.DeviceId = model.DeviceId ?? deviceStatusLog.DeviceId;
                     deviceStatusLog.LastModificationTime = DateTime.Now;
                     deviceStatusLog.LastModifierUserId = _svcHelper.GetCurrentUserId();
                     await _deviceStatusLogRepo.SaveAsync();
@@ -118,7 +145,7 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c=>c.IsDeleted == false);
+                var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c => c.IsDeleted == false);
                 if (deviceStatusLog != null)
                 {
                     deviceStatusLog.DeletionTime = DateTime.Now;
@@ -137,7 +164,7 @@ namespace DeviceManager.Business.Implementations
         }
         private async Task<List<GetDeviceStatusLogDto>> GetAllAsync()
         {
-            var getall = await _deviceStatusLogRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c=>c.Status).Include(c=>c.Device).ToListAsync();
+            var getall = await _deviceStatusLogRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c => c.Device).ToListAsync();
             return getall.Select(c => new GetDeviceStatusLogDto
             {
                 Id = c.Id,
@@ -146,9 +173,9 @@ namespace DeviceManager.Business.Implementations
                 LastModificationTime = c.LastModificationTime,
                 LastModifierUserId = c.LastModifierUserId,
 
-                Status = c.Status?.IsDeleted == false ? c.Status?.Status : null,    
-                StatusId = c.Status?.IsDeleted == false ? c?.StatusId : null,
-                Device = c.Device?.IsDeleted == false ? c.Device?.Name : null,  
+                DeviceStatus = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatus?.Status : null,
+                DeviceStatusId = c.DeviceStatus?.IsDeleted == false ? c?.DeviceStatusId : null,
+                Device = c.Device?.IsDeleted == false ? c.Device?.Name : null,
                 DeviceId = c.Device?.IsDeleted == false ? c?.DeviceId : null
             }).ToList();
         }

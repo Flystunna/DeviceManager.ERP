@@ -9,5 +9,6 @@ namespace DeviceManager.Repository.Interfaces
 {
     public interface IDeviceStatusRepository : IRepository<DeviceStatus>
     {
+        string LookUpDeviceStatusByDeviceStatusId(long deviceStatusId);
     }
 }

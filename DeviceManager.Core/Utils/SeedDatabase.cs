@@ -57,7 +57,7 @@ namespace DeviceManager.Core.Utils
 
                     if (adminRole != null)
                     {
-                        var adminRoleResult = userMgr.AddToRoleAsync(admin, adminRole.Name).GetAwaiter().GetResult();
+                        userMgr.AddToRoleAsync(admin, adminRole.Name).GetAwaiter().GetResult();
                     }
                 }
             }
@@ -180,19 +180,19 @@ namespace DeviceManager.Core.Utils
             var existing_device_status = context.DeviceStatus.AsNoTracking().ToList();
             var existing_device_types = context.DeviceType.AsNoTracking().ToList();
 
-            var offline = existing_device_status.FirstOrDefault(c => c.Status == "Offline")?.Id;
-            var available = existing_device_status.FirstOrDefault(c => c.Status == "Available")?.Id;
-            var inUse = existing_device_status.FirstOrDefault(c => c.Status == "InUse")?.Id;
+            var offline = existing_device_status.FirstOrDefault(c => c.Status == "Offline").Id;
+            var available = existing_device_status.FirstOrDefault(c => c.Status == "Available").Id;
+            var inUse = existing_device_status.FirstOrDefault(c => c.Status == "InUse").Id;
 
-            var iOS = existing_device_types.FirstOrDefault(c => c.Type == "iOS")?.Id;
-            var Android = existing_device_types.FirstOrDefault(c => c.Type == "Android")?.Id;
-            var Web = existing_device_types.FirstOrDefault(c => c.Type == "Web")?.Id;
+            var iOS = existing_device_types.FirstOrDefault(c => c.Type == "iOS").Id;
+            var Android = existing_device_types.FirstOrDefault(c => c.Type == "Android").Id;
+            var Web = existing_device_types.FirstOrDefault(c => c.Type == "Web").Id;
 
             var devices = new List<Device>()
             {
                 new Device
                 {
-                    StatusId = available,
+                    DeviceStatusId = available,
                     DeviceTypeId = iOS,
                     Name = "Device 1",
                     Temperature = 33.99,
@@ -202,7 +202,7 @@ namespace DeviceManager.Core.Utils
                 {
                     Name = "Device 2",
                     Temperature = 33.99,
-                    StatusId = inUse,
+                    DeviceStatusId = inUse,
                     DeviceTypeId = iOS,
                     CreationTime = DateTime.Now
                 },
@@ -211,12 +211,12 @@ namespace DeviceManager.Core.Utils
                     DeviceTypeId = Android,
                     Name = "Device 3",
                     Temperature = 33.99,
-                    StatusId = offline,
+                    DeviceStatusId = offline,
                     CreationTime = DateTime.Now
                 },
                 new Device
                 {
-                    StatusId = available,
+                    DeviceStatusId = available,
                     DeviceTypeId = Web,
                     Name = "Device 4",
                     Temperature = 33.99,
@@ -227,7 +227,7 @@ namespace DeviceManager.Core.Utils
                     Name = "Device 5",
                     DeviceTypeId = Android,
                     Temperature = 33.99,
-                    StatusId = inUse,
+                    DeviceStatusId = inUse,
                     CreationTime = DateTime.Now
                 },
                 new Device
@@ -235,7 +235,7 @@ namespace DeviceManager.Core.Utils
                     Name = "Device 6",
                     DeviceTypeId = Web,
                     Temperature = 33.99,
-                    StatusId = offline,
+                    DeviceStatusId = offline,
                     CreationTime = DateTime.Now
                 },
                 new Device
@@ -243,7 +243,7 @@ namespace DeviceManager.Core.Utils
                     Name = "Device 7",
                     DeviceTypeId = Android,
                     Temperature = 33.99,
-                    StatusId = available,
+                    DeviceStatusId = available,
                     CreationTime = DateTime.Now
                 },
                 new Device
@@ -251,7 +251,7 @@ namespace DeviceManager.Core.Utils
                     Name = "Device 8",
                     DeviceTypeId = iOS,
                     Temperature = 33.99,
-                    StatusId = inUse,
+                    DeviceStatusId = inUse,
                     CreationTime = DateTime.Now
                 },
                 new Device
@@ -259,7 +259,7 @@ namespace DeviceManager.Core.Utils
                     Name = "Device 9",
                     DeviceTypeId = Android,
                     Temperature = 33.99,
-                    StatusId = offline,
+                    DeviceStatusId = offline,
                     CreationTime = DateTime.Now
                 },
                 new Device
@@ -267,7 +267,7 @@ namespace DeviceManager.Core.Utils
                     Name = "Device 10",
                     DeviceTypeId = Web,
                     Temperature = 33.99,
-                    StatusId = available,
+                    DeviceStatusId = available,
                     CreationTime = DateTime.Now
                 },
             };
@@ -293,60 +293,60 @@ namespace DeviceManager.Core.Utils
             var existing_devices = context.Devices.AsNoTracking().Take(5).ToList();
             var existing_device_status = context.DeviceStatus.AsNoTracking().ToList();
 
-            var offline = existing_device_status.FirstOrDefault(c => c.Status == "Offline")?.Id;
-            var available = existing_device_status.FirstOrDefault(c => c.Status == "Available")?.Id;
-            var inUse = existing_device_status.FirstOrDefault(c => c.Status == "InUse")?.Id;
+            var offline = existing_device_status.FirstOrDefault(c => c.Status == "Offline").Id;
+            var available = existing_device_status.FirstOrDefault(c => c.Status == "Available").Id;
+            var inUse = existing_device_status.FirstOrDefault(c => c.Status == "InUse").Id;
 
             var devices_status_logs = new List<DeviceStatusLog>()
             {
                 new DeviceStatusLog
                 {
-                    StatusId = available,
-                    DeviceId = existing_devices?.Count > 0 ? existing_devices[0].Id : null,
+                    DeviceStatusId = available,
+                    DeviceId = existing_devices[0].Id,
                     CreationTime = DateTime.Now
                 },
                 new DeviceStatusLog
                 {
-                    StatusId = inUse,
-                    DeviceId = existing_devices?.Count > 0 ? existing_devices[0].Id : null,
+                    DeviceStatusId = inUse,
+                    DeviceId = existing_devices[0].Id,
                     CreationTime = DateTime.Now
                 },
                 new DeviceStatusLog
                 {
-                    StatusId = inUse,
-                    DeviceId = existing_devices?.Count > 0 ? existing_devices[0].Id : null,
-                    CreationTime = DateTime.Now
-                },
-
-                new DeviceStatusLog
-                {
-                    StatusId = offline,
-                    DeviceId = existing_devices?.Count > 1 ? existing_devices[1].Id : null,
-                    CreationTime = DateTime.Now
-                },
-                new DeviceStatusLog
-                {
-                    StatusId = offline,
-                    DeviceId = existing_devices?.Count > 1 ? existing_devices[1].Id : null,
+                    DeviceStatusId = inUse,
+                    DeviceId = existing_devices[0].Id,
                     CreationTime = DateTime.Now
                 },
 
                 new DeviceStatusLog
                 {
-                    StatusId = inUse,
-                    DeviceId = existing_devices?.Count > 2 ? existing_devices[2].Id : null,
+                    DeviceStatusId = offline,
+                    DeviceId = existing_devices[1].Id,
                     CreationTime = DateTime.Now
                 },
                 new DeviceStatusLog
                 {
-                    StatusId = available,
-                    DeviceId = existing_devices?.Count > 3 ? existing_devices[3].Id : null,
+                    DeviceStatusId = offline,
+                    DeviceId = existing_devices[1].Id,
+                    CreationTime = DateTime.Now
+                },
+
+                new DeviceStatusLog
+                {
+                    DeviceStatusId = inUse,
+                    DeviceId = existing_devices[2].Id,
                     CreationTime = DateTime.Now
                 },
                 new DeviceStatusLog
                 {
-                    StatusId = inUse,
-                    DeviceId = existing_devices?.Count > 4 ? existing_devices[4].Id : null,
+                    DeviceStatusId = available,
+                    DeviceId = existing_devices[3].Id,
+                    CreationTime = DateTime.Now
+                },
+                new DeviceStatusLog
+                {
+                    DeviceStatusId = inUse,
+                    DeviceId = existing_devices[4].Id,
                     CreationTime = DateTime.Now
                 }
             };

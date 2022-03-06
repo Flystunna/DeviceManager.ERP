@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeviceManager.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220305091955_devicetype")]
-    partial class devicetype
+    [Migration("20220306215743_init2")]
+    partial class init2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,110 +20,6 @@ namespace DeviceManager.Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("DeviceManager.Data.Models.Entities.ApplicationUser", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CreatorUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DeleterUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsLoggedIn")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastLoginDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastLoginIP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("LastModifierUserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
-                });
 
             modelBuilder.Entity("DeviceManager.Data.Models.Entities.Device", b =>
                 {
@@ -144,7 +40,10 @@ namespace DeviceManager.Domain.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("DeviceTypeId")
+                    b.Property<long?>("DeviceStatusId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DeviceTypeId")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
@@ -160,17 +59,14 @@ namespace DeviceManager.Domain.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<long?>("StatusId")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("Temperature")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeviceTypeId");
+                    b.HasIndex("DeviceStatusId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("DeviceTypeId");
 
                     b.ToTable("Devices");
                 });
@@ -231,7 +127,10 @@ namespace DeviceManager.Domain.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("DeviceId")
+                    b.Property<long>("DeviceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DeviceStatusId")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
@@ -243,14 +142,11 @@ namespace DeviceManager.Domain.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("StatusId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DeviceId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("DeviceStatusId");
 
                     b.ToTable("DeviceStatusLog");
                 });
@@ -340,6 +236,110 @@ namespace DeviceManager.Domain.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("DeviceManager.Data.Models.Entities.User.ApplicationUser", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsLoggedIn")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastLoginDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastLoginIP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -445,32 +445,38 @@ namespace DeviceManager.Domain.Migrations
 
             modelBuilder.Entity("DeviceManager.Data.Models.Entities.Device", b =>
                 {
+                    b.HasOne("DeviceManager.Data.Models.Entities.DeviceStatus", "DeviceStatus")
+                        .WithMany()
+                        .HasForeignKey("DeviceStatusId");
+
                     b.HasOne("DeviceManager.Data.Models.Entities.DeviceType", "DeviceType")
                         .WithMany()
-                        .HasForeignKey("DeviceTypeId");
+                        .HasForeignKey("DeviceTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DeviceManager.Data.Models.Entities.DeviceStatus", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
+                    b.Navigation("DeviceStatus");
 
                     b.Navigation("DeviceType");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("DeviceManager.Data.Models.Entities.DeviceStatusLog", b =>
                 {
                     b.HasOne("DeviceManager.Data.Models.Entities.Device", "Device")
                         .WithMany()
-                        .HasForeignKey("DeviceId");
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DeviceManager.Data.Models.Entities.DeviceStatus", "Status")
+                    b.HasOne("DeviceManager.Data.Models.Entities.DeviceStatus", "DeviceStatus")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("DeviceStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Device");
 
-                    b.Navigation("Status");
+                    b.Navigation("DeviceStatus");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -484,7 +490,7 @@ namespace DeviceManager.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
-                    b.HasOne("DeviceManager.Data.Models.Entities.ApplicationUser", null)
+                    b.HasOne("DeviceManager.Data.Models.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -493,7 +499,7 @@ namespace DeviceManager.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
-                    b.HasOne("DeviceManager.Data.Models.Entities.ApplicationUser", null)
+                    b.HasOne("DeviceManager.Data.Models.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -508,7 +514,7 @@ namespace DeviceManager.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DeviceManager.Data.Models.Entities.ApplicationUser", null)
+                    b.HasOne("DeviceManager.Data.Models.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -517,7 +523,7 @@ namespace DeviceManager.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
-                    b.HasOne("DeviceManager.Data.Models.Entities.ApplicationUser", null)
+                    b.HasOne("DeviceManager.Data.Models.Entities.User.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

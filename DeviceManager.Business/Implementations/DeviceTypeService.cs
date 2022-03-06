@@ -23,11 +23,17 @@ namespace DeviceManager.Business.Implementations
             _deviceTypeRepo = deviceTypeRepo;
             _svcHelper = svcHelper;
         }
+        public async Task<bool> IfExists(long Id)
+        {
+            var exists = await _deviceTypeRepo.FirstOrDefaultAsync(c => c.Id == Id && c.IsDeleted == false);
+            if (exists == null) return false;
+            else return true;
+        }
         public async Task<bool> AddAsync(PostDeviceTypeDto model)
         {
             try
             {
-                await _deviceTypeRepo.AddAsync(new Data.Models.Entities.DeviceType
+                await _deviceTypeRepo.InsertAsync(new Data.Models.Entities.DeviceType
                 {
                     CreationTime = DateTime.Now,
                     CreatorUserId = _svcHelper.GetCurrentUserId(),
@@ -48,7 +54,7 @@ namespace DeviceManager.Business.Implementations
                 var getall = await GetAllAsync();
                 if (!string.IsNullOrEmpty(query) && !string.IsNullOrWhiteSpace(query))
                 {
-                    getall = getall.Where(c => c.Type.ToLower().ToLower() == query.ToLower()).ToList();
+                    getall = getall.Where(c => c.Type.ToLower().ToLower().Contains(query.ToLower())).ToList();
                 }
                 return await getall.AsQueryable().ToPagedListAsync(pageNumber, pageSize);
             }

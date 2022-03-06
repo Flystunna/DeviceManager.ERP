@@ -3,6 +3,7 @@ using DeviceManager.Core.ExceptionHelpers;
 using DeviceManager.Data.Models.Dtos.Get;
 using DeviceManager.Data.Models.Dtos.Post;
 using DeviceManager.Data.Models.Dtos.Put;
+using DeviceManager.Data.Models.Entities;
 using DeviceManager.Repository.Interfaces;
 using IPagedList;
 using Microsoft.AspNetCore.Http;
@@ -24,11 +25,17 @@ namespace DeviceManager.Business.Implementations
             _deviceStatusRepo = deviceStatusRepo;
             _svcHelper = svcHelper;
         }
+        public async Task<bool> IfExists(long Id)
+        {
+            var exists = await _deviceStatusRepo.FirstOrDefaultAsync(c => c.Id == Id && c.IsDeleted == false);
+            if (exists == null) return false;
+            else return true;
+        }
         public async Task<bool> AddAsync(PostDeviceStatusDto model)
         {
             try
             {
-                var add = await _deviceStatusRepo.AddAsync(new Data.Models.Entities.DeviceStatus
+                await _deviceStatusRepo.InsertAsync(new DeviceStatus
                 {
                     CreationTime = DateTime.Now,
                     CreatorUserId = _svcHelper.GetCurrentUserId(),
@@ -49,7 +56,7 @@ namespace DeviceManager.Business.Implementations
                 var getall = await GetAllAsync();
                 if (!string.IsNullOrEmpty(query) && !string.IsNullOrWhiteSpace(query))
                 {
-                    getall = getall.Where(c => c.Status.ToLower() == query.ToLower()).ToList();
+                    getall = getall.Where(c => c.Status.ToLower().Contains(query.ToLower())).ToList();
                 }
                 return await getall.AsQueryable().ToPagedListAsync(pageNumber, pageSize);
             }
@@ -63,7 +70,7 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var device = await _deviceStatusRepo.GetAsync(c => c.Id == Id && c.IsDeleted == false, c => c.Status);
+                var device = await _deviceStatusRepo.GetAsync(c => c.Id == Id && c.IsDeleted == false);
                 if (device != null)
                 {
                     return new GetDeviceStatusDto

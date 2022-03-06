@@ -11,7 +11,7 @@ namespace DeviceManager.Business.Interfaces
     {
         Task<bool> AddAsync(PostDeviceDto model);
         Task<GetDeviceDto> GetAsync(long Id);
-        Task<List<GetDeviceDto>> GetSimilarDevices(long deviceId);
+        Task<List<GetSimilarDeviceDto>> GetSimilarDevices(long deviceId);
         Task<IPagedList<GetDeviceDto>> GetPagedAsync(int pageNumber, int pageSize, string query);
         Task<bool> UpdateAsync(long Id, PutDeviceDto model);
         Task<bool> DeleteAsync(long Id);
