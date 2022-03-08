@@ -23,12 +23,12 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route("AddAsync")]
-        public async Task<IServiceResponse<bool>> AddAsync(Data.Models.Dtos.Post.PostDeviceTypeDto model)
+        public async Task<IServiceResponse<Data.Models.Dtos.Get.GetDeviceTypeDto>> AddAsync(Data.Models.Dtos.Post.PostDeviceTypeDto model)
         {
             return await HandleApiOperationAsync(async () =>
             {
                 var responseOBJ = await _DeviceTypeSvc.AddAsync(model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<Data.Models.Dtos.Get.GetDeviceTypeDto>
                 {
                     Object = responseOBJ
                 };
@@ -84,11 +84,11 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAsync/{id}")]
-        public async Task<IServiceResponse<bool>> UpdateAsync(int id, Data.Models.Dtos.Put.PutDeviceTypeDto model)
+        public async Task<IServiceResponse<Data.Models.Dtos.Get.GetDeviceTypeDto>> UpdateAsync(int id, Data.Models.Dtos.Put.PutDeviceTypeDto model)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _DeviceTypeSvc.UpdateAsync(id, model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<Data.Models.Dtos.Get.GetDeviceTypeDto>
                 {
                     Object = responseOBJ
                 };
@@ -108,7 +108,8 @@ namespace DeviceManager.API.Controllers.v1
                 var responseOBJ = await _DeviceTypeSvc.DeleteAsync(id);
                 return new ServiceResponse<bool>
                 {
-                    Object = responseOBJ
+                    Object = responseOBJ,
+                    Code = responseOBJ ? "204" : "400"
                 };
             });
         }

@@ -1,8 +1,8 @@
 ﻿using DeviceManager.Business.Implementations;
 using DeviceManager.Business.Interfaces;
+using DeviceManager.Data.Models.Dtos.Get;
 using IPagedList;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -24,12 +24,12 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route("AddAsync")]
-        public async Task<IServiceResponse<bool>> AddAsync(Data.Models.Dtos.Post.PostDeviceStatusDto model)
+        public async Task<IServiceResponse<GetDeviceStatusDto>> AddAsync(Data.Models.Dtos.Post.PostDeviceStatusDto model)
         {
             return await HandleApiOperationAsync(async () =>
             {
                 var responseOBJ = await _deviceStatusSvc.AddAsync(model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<GetDeviceStatusDto>
                 {
                     Object = responseOBJ
                 };
@@ -84,11 +84,11 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAsync/{id}")]
-        public async Task<IServiceResponse<bool>> UpdateAsync(int id, Data.Models.Dtos.Put.PutDeviceStatusDto model)
+        public async Task<IServiceResponse<GetDeviceStatusDto>> UpdateAsync(int id, Data.Models.Dtos.Put.PutDeviceStatusDto model)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceStatusSvc.UpdateAsync(id, model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<GetDeviceStatusDto>
                 {
                     Object = responseOBJ
                 };
@@ -108,7 +108,8 @@ namespace DeviceManager.API.Controllers.v1
                 var responseOBJ = await _deviceStatusSvc.DeleteAsync(id);
                 return new ServiceResponse<bool>
                 {
-                    Object = responseOBJ
+                    Object = responseOBJ,
+                    Code = responseOBJ == true ? "204" : "400"
                 };
             });
         }

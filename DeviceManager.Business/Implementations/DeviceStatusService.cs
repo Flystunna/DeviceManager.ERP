@@ -31,17 +31,26 @@ namespace DeviceManager.Business.Implementations
             if (exists == null) return false;
             else return true;
         }
-        public async Task<bool> AddAsync(PostDeviceStatusDto model)
+        public async Task<GetDeviceStatusDto> AddAsync(PostDeviceStatusDto model)
         {
             try
             {
-                await _deviceStatusRepo.InsertAsync(new DeviceStatus
+                var newEntity = new DeviceStatus
                 {
                     CreationTime = DateTime.Now,
                     CreatorUserId = _svcHelper.GetCurrentUserId(),
                     Status = model.Status
-                });
-                return true;
+                };
+
+                await _deviceStatusRepo.InsertAsync(newEntity);
+
+                var entity = await _deviceStatusRepo.FirstOrDefaultAsync(c => c.Status == newEntity.Status
+                && c.CreationTime == newEntity.CreationTime
+                && c.CreatorUserId == newEntity.CreatorUserId);
+
+                if (entity != null)
+                    return GetDeviceStatusConverter(entity);
+                throw new GenericException("An error occurred while saving data", StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -91,7 +100,7 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        public async Task<bool> UpdateAsync(long Id, PutDeviceStatusDto model)
+        public async Task<GetDeviceStatusDto> UpdateAsync(long Id, PutDeviceStatusDto model)
         {
             try
             {
@@ -102,7 +111,7 @@ namespace DeviceManager.Business.Implementations
                     deviceStatus.LastModificationTime = DateTime.Now;
                     deviceStatus.LastModifierUserId = _svcHelper.GetCurrentUserId();
                     await _deviceStatusRepo.SaveAsync();
-                    return true;
+                    return GetDeviceStatusConverter(deviceStatus);
                 }
                 throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
             }
@@ -134,6 +143,20 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
+
+        private GetDeviceStatusDto GetDeviceStatusConverter(DeviceStatus entity)
+        {
+            return new GetDeviceStatusDto
+            {
+                Id = entity.Id,
+                CreationTime = entity.CreationTime,
+                CreatorUserId = entity.CreatorUserId,
+                LastModificationTime = entity.LastModificationTime,
+                LastModifierUserId = entity.LastModifierUserId,
+                Status = entity.Status
+            };
+        }
+
         private async Task<List<GetDeviceStatusDto>> GetAllAsync()
         {
             var getall = await _deviceStatusRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().ToListAsync();

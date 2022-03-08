@@ -3,7 +3,6 @@ using DeviceManager.Business.Interfaces;
 using DeviceManager.Data.Models.Dtos.Get;
 using IPagedList;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,12 +25,12 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route("AddAsync")]
-        public async Task<IServiceResponse<bool>> AddAsync(Data.Models.Dtos.Post.PostDeviceDto model)
+        public async Task<IServiceResponse<GetDeviceDto>> AddAsync(Data.Models.Dtos.Post.PostDeviceDto model)
         {
             return await HandleApiOperationAsync(async () =>
             {
                 var responseOBJ = await _deviceSvc.AddAsync(model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<GetDeviceDto>
                 {
                     Object = responseOBJ
                 };
@@ -50,11 +49,11 @@ namespace DeviceManager.API.Controllers.v1
         [Route("GetPagedAsync")]
         [Route("GetPagedAsync/{pageNumber}/{pageSize}")]
         [Route("GetPagedAsync/{pageNumber}/{pageSize}/{query}")]
-        public async Task<IServiceResponse<IPagedList<Data.Models.Dtos.Get.GetDeviceDto>>> GetPagedAsync(int pageNumber = 1, int pageSize = Core.Utils.CoreConstants.DefaultPageSize, string query = null)
+        public async Task<IServiceResponse<IPagedList<GetDeviceDto>>> GetPagedAsync(int pageNumber = 1, int pageSize = Core.Utils.CoreConstants.DefaultPageSize, string query = null)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceSvc.GetPagedAsync(pageNumber, pageSize, query);
-                return new ServiceResponse<IPagedList<Data.Models.Dtos.Get.GetDeviceDto>>
+                return new ServiceResponse<IPagedList<GetDeviceDto>>
                 {
                     Object = responseOBJ
                 };
@@ -68,11 +67,11 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpGet]
         [Route("GetAsync/{id}")]
-        public async Task<IServiceResponse<Data.Models.Dtos.Get.GetDeviceDto>> GetAsync(long id)
+        public async Task<IServiceResponse<GetDeviceDto>> GetAsync(long id)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceSvc.GetAsync(id);
-                return new ServiceResponse<Data.Models.Dtos.Get.GetDeviceDto>
+                return new ServiceResponse<GetDeviceDto>
                 {
                     Object = responseOBJ
                 };
@@ -105,11 +104,11 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAsync/{id}")]
-        public async Task<IServiceResponse<bool>> UpdateAsync(int id, Data.Models.Dtos.Put.PutDeviceDto model)
+        public async Task<IServiceResponse<GetDeviceDto>> UpdateAsync(int id, Data.Models.Dtos.Put.PutDeviceDto model)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceSvc.UpdateAsync(id, model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<GetDeviceDto>
                 {
                     Object = responseOBJ
                 };
@@ -129,7 +128,8 @@ namespace DeviceManager.API.Controllers.v1
                 var responseOBJ = await _deviceSvc.DeleteAsync(id);
                 return new ServiceResponse<bool>
                 {
-                    Object = responseOBJ
+                    Object = responseOBJ,
+                    Code = responseOBJ == true ? "204" : "400"
                 };
             });
         }

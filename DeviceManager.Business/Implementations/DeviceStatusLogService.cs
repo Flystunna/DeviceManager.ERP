@@ -27,18 +27,27 @@ namespace DeviceManager.Business.Implementations
             _deviceStatusRepo = deviceStatusRepo;
             _svcHelper = svcHelper;
         }
-        public async Task<bool> AddAsync(PostDeviceStatusLogDto model)
+        public async Task<GetDeviceStatusLogDto> AddAsync(PostDeviceStatusLogDto model)
         {
             try
             {
-                await _deviceStatusLogRepo.InsertAsync(new DeviceStatusLog
+                var newEntity = new DeviceStatusLog
                 {
                     CreationTime = DateTime.Now,
                     CreatorUserId = _svcHelper.GetCurrentUserId(),
                     DeviceStatusId = model.DeviceStatusId,
                     DeviceId = model.DeviceId
-                });
-                return true;
+                };
+                await _deviceStatusLogRepo.InsertAsync(newEntity);
+
+                var entity = await _deviceStatusLogRepo.FirstOrDefaultAsync(c => c.DeviceStatusId == newEntity.DeviceStatusId
+                && c.CreationTime == newEntity.CreationTime
+                && c.CreatorUserId == newEntity.CreatorUserId
+                && c.DeviceId == newEntity.DeviceId);
+
+                if (entity != null)
+                    return GetDeviceStatusLogConverter(entity);
+                throw new GenericException("An error occurred while saving data", StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -118,11 +127,11 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        public async Task<bool> UpdateAsync(long Id, PutDeviceStatusLogDto model)
+        public async Task<GetDeviceStatusLogDto> UpdateAsync(long Id, PutDeviceStatusLogDto model)
         {
             try
             {
-                var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c => c.Id == Id && c.IsDeleted == false);
+                var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c => c.Id == Id && c.IsDeleted == false, x=>x.DeviceStatus, y=>y.Device);
                 if (deviceStatusLog != null)
                 {
                     deviceStatusLog.DeviceStatusId = model.DeviceStatusId ?? deviceStatusLog.DeviceStatusId;
@@ -130,7 +139,7 @@ namespace DeviceManager.Business.Implementations
                     deviceStatusLog.LastModificationTime = DateTime.Now;
                     deviceStatusLog.LastModifierUserId = _svcHelper.GetCurrentUserId();
                     await _deviceStatusLogRepo.SaveAsync();
-                    return true;
+                    return GetDeviceStatusLogConverter(deviceStatusLog);
                 }
                 throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
             }
@@ -145,7 +154,7 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var deviceStatusLog = await _deviceStatusLogRepo.GetAsync(c => c.IsDeleted == false);
+                var deviceStatusLog = await _deviceStatusLogRepo.GetByIdAsync(id);
                 if (deviceStatusLog != null)
                 {
                     deviceStatusLog.DeletionTime = DateTime.Now;
@@ -161,6 +170,22 @@ namespace DeviceManager.Business.Implementations
                 Log.Error(ex.ToBetterString());
                 throw;
             }
+        }
+        private GetDeviceStatusLogDto GetDeviceStatusLogConverter(DeviceStatusLog entity)
+        {
+            return new GetDeviceStatusLogDto
+            {
+                Id = entity.Id,
+                CreationTime = entity.CreationTime,
+                CreatorUserId = entity.CreatorUserId,
+                LastModificationTime = entity.LastModificationTime,
+                LastModifierUserId = entity.LastModifierUserId,
+
+                DeviceStatus = entity.DeviceStatus?.IsDeleted == false ? entity.DeviceStatus?.Status : null,
+                DeviceStatusId = entity.DeviceStatus?.IsDeleted == false ? entity?.DeviceStatusId : null,
+                Device = entity.Device?.IsDeleted == false ? entity.Device?.Name : null,
+                DeviceId = entity.Device?.IsDeleted == false ? entity?.DeviceId : null
+            };
         }
         private async Task<List<GetDeviceStatusLogDto>> GetAllAsync()
         {

@@ -28,12 +28,12 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route("AddAsync")]
-        public async Task<IServiceResponse<bool>> AddAsync(PostDeviceStatusLogDto model)
+        public async Task<IServiceResponse<GetDeviceStatusLogDto>> AddAsync(PostDeviceStatusLogDto model)
         {
             return await HandleApiOperationAsync(async () =>
             {
                 var responseOBJ = await _deviceStatusLogSvc.AddAsync(model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<GetDeviceStatusLogDto>
                 {
                     Object = responseOBJ
                 };
@@ -107,11 +107,11 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAsync/{id}")]
-        public async Task<IServiceResponse<bool>> UpdateAsync(int id, PutDeviceStatusLogDto model)
+        public async Task<IServiceResponse<GetDeviceStatusLogDto>> UpdateAsync(int id, PutDeviceStatusLogDto model)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceStatusLogSvc.UpdateAsync(id, model);
-                return new ServiceResponse<bool>
+                return new ServiceResponse<GetDeviceStatusLogDto>
                 {
                     Object = responseOBJ
                 };
@@ -131,7 +131,8 @@ namespace DeviceManager.API.Controllers.v1
                 var responseOBJ = await _deviceStatusLogSvc.DeleteAsync(id);
                 return new ServiceResponse<bool>
                 {
-                    Object = responseOBJ
+                    Object = responseOBJ,
+                    Code = responseOBJ == true ? "204" : "400"
                 };
             });
         }

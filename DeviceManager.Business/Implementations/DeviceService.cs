@@ -30,7 +30,7 @@ namespace DeviceManager.Business.Implementations
             _deviceTypeSvc = deviceTypeSvc;
             _svcHelper = svcHelper;
         }     
-        public async Task<bool> AddAsync(PostDeviceDto model)
+        public async Task<GetDeviceDto> AddAsync(PostDeviceDto model)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace DeviceManager.Business.Implementations
                 if (!ifExistDeviceType)
                     throw new GenericException("Invalid Device Type", StatusCodes.Status400BadRequest);
 
-                await _deviceRepo.InsertAsync(new Device
+                var newdevice = new Device
                 {
                     CreationTime = DateTime.Now,
                     CreatorUserId = _svcHelper.GetCurrentUserId(),
@@ -50,8 +50,20 @@ namespace DeviceManager.Business.Implementations
                     Name = model.Name,
                     Temperature = model.Temperature,
                     DeviceTypeId = model.DeviceTypeId
-                });
-                return true;
+                };
+
+                await _deviceRepo.InsertAsync(newdevice);
+
+                var entity = await _deviceRepo.FirstOrDefaultAsync(c=>c.Name == newdevice.Name 
+                && c.CreationTime == newdevice.CreationTime 
+                && c.CreatorUserId == newdevice.CreatorUserId 
+                && c.DeviceStatusId == newdevice.DeviceStatusId 
+                && c.DeviceTypeId == newdevice.DeviceTypeId
+                && c.Temperature == newdevice.Temperature);
+
+                if (entity != null)
+                    return GetDeviceConverter(entity);
+                throw new GenericException("An error occurred while saving data", StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -116,7 +128,7 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        public async Task<bool> UpdateAsync(long Id, Data.Models.Dtos.Put.PutDeviceDto model)
+        public async Task<GetDeviceDto> UpdateAsync(long Id, Data.Models.Dtos.Put.PutDeviceDto model)
         {
             try
             {
@@ -150,7 +162,7 @@ namespace DeviceManager.Business.Implementations
                     {
                         await LogDeviceStatusChange(Id, model.DeviceStatusId.GetValueOrDefault());
                     }
-                    return true;
+                    return GetDeviceConverter(device);
                 }
                 throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
             }
@@ -210,13 +222,33 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        private async Task<List<GetDeviceDto>> GetAllAsync()
+        public async Task<List<GetDeviceDto>> GetAllAsync()
         {
             var getall = await _deviceRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c=>c.DeviceType).ToListAsync();
             if(getall != null)  
                 return GetDevicesConverter(getall);
             return null;
         }
+
+        private static GetDeviceDto GetDeviceConverter(Device entity)
+        {
+            return new GetDeviceDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                CreationTime = entity.CreationTime,
+                CreatorUserId = entity.CreatorUserId,
+                LastModificationTime = entity.LastModificationTime,
+                LastModifierUserId = entity.LastModifierUserId,
+                Temperature = entity.Temperature,
+
+                DeviceStatus = entity.DeviceStatus?.IsDeleted == false ? entity.DeviceStatus.Status : null,
+                DeviceStatusId = entity.DeviceStatus?.IsDeleted == false ? entity.DeviceStatusId : null,
+                DeviceType = entity.DeviceType?.IsDeleted == false ? entity.DeviceType.Type : null,
+                DeviceTypeId = entity.DeviceType?.IsDeleted == false ? entity.DeviceTypeId : null
+            };
+        }
+
         private static List<GetDeviceDto> GetDevicesConverter(List<Device> entities)
         {
             return entities.Select(c => new GetDeviceDto
