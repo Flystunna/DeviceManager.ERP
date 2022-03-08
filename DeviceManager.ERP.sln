@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.API", "DeviceManager.API\DeviceManager.API.csproj", "{18376630-446A-417D-9493-4C312A7F183E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager.API", "DeviceManager.API\DeviceManager.API.csproj", "{18376630-446A-417D-9493-4C312A7F183E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.Repository", "DeviceManager.Repository\DeviceManager.Repository.csproj", "{4250D4DF-E50B-4641-92AF-04AB744A1947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager.Repository", "DeviceManager.Repository\DeviceManager.Repository.csproj", "{4250D4DF-E50B-4641-92AF-04AB744A1947}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.Data", "DeviceManager.Data\DeviceManager.Data.csproj", "{223F2DBF-F808-4AD1-91E9-E284B41FB7CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager.Data", "DeviceManager.Data\DeviceManager.Data.csproj", "{223F2DBF-F808-4AD1-91E9-E284B41FB7CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.Domain", "DeviceManager.Domain\DeviceManager.Domain.csproj", "{4EEA0D2F-E3AF-48C2-AEFC-367E5DE4807D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager.Domain", "DeviceManager.Domain\DeviceManager.Domain.csproj", "{4EEA0D2F-E3AF-48C2-AEFC-367E5DE4807D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.Business", "DeviceManager.Business\DeviceManager.Business.csproj", "{1BAE05F2-EE79-49AC-9A93-5BDDE7F2DFCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager.Business", "DeviceManager.Business\DeviceManager.Business.csproj", "{1BAE05F2-EE79-49AC-9A93-5BDDE7F2DFCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.Core", "DeviceManager.Core\DeviceManager.Core.csproj", "{8C3679A9-DC53-4CA1-B91B-32CB68F32AE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager.Core", "DeviceManager.Core\DeviceManager.Core.csproj", "{8C3679A9-DC53-4CA1-B91B-32CB68F32AE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceManager.Tests", "DeviceManager.Tests\DeviceManager.Tests.csproj", "{6D5D2A05-CD38-4A9E-A78C-153856831853}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{8C3679A9-DC53-4CA1-B91B-32CB68F32AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C3679A9-DC53-4CA1-B91B-32CB68F32AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C3679A9-DC53-4CA1-B91B-32CB68F32AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D5D2A05-CD38-4A9E-A78C-153856831853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D5D2A05-CD38-4A9E-A78C-153856831853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D5D2A05-CD38-4A9E-A78C-153856831853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D5D2A05-CD38-4A9E-A78C-153856831853}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
