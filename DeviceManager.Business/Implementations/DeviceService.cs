@@ -94,7 +94,7 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        public async Task<IPagedList<GetDeviceDto>> GetDeviceByStatusPagedAsync(GetDeviceByStatusFilterDto model)
+        public async Task<IPagedList<GetDeviceDto>> GetPagedDeviceByStatusAsync(PostDeviceByStatusFilterDto model)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace DeviceManager.Business.Implementations
                 var device = await _deviceRepo.GetAsyncAsNoTracking(c => c.Id == Id && c.IsDeleted == false, c => c.DeviceStatus, x=>x.DeviceType);
                 if(device != null)
                 {
-                    var deviceStatusActivityLog = await _deviceStatusLogSvc.GetDeviceStatusActivityLog(Id);
+                    var deviceStatusActivityLog = await _deviceStatusLogSvc.GetDeviceStatusActivityLog(Id, Data.Models.Enums.GroupDeviceStatusActivityLogFilter.Daily);
                     var similarDevices = await GetSimilarDevices(Id);
                     return new GetDeviceDto
                     {
@@ -284,9 +284,9 @@ namespace DeviceManager.Business.Implementations
                 Temperature = entity.Temperature,
 
                 DeviceStatus = entity.DeviceStatus?.IsDeleted == false ? entity.DeviceStatus.Status : null,
-                DeviceStatusId = entity.DeviceStatus?.IsDeleted == false ? entity.DeviceStatusId : null,
+                DeviceStatusId = entity.DeviceStatusId,
                 DeviceType = entity.DeviceType?.IsDeleted == false ? entity.DeviceType.Type : null,
-                DeviceTypeId = entity.DeviceType?.IsDeleted == false ? entity.DeviceTypeId : null
+                DeviceTypeId = entity.DeviceTypeId
             };
         }
 
@@ -303,9 +303,9 @@ namespace DeviceManager.Business.Implementations
                 Temperature = c.Temperature,
 
                 DeviceStatus = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatus.Status : null,
-                DeviceStatusId = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatusId : null,
+                DeviceStatusId = c.DeviceStatusId,
                 DeviceType = c.DeviceType?.IsDeleted == false ? c.DeviceType.Type : null,
-                DeviceTypeId = c.DeviceType?.IsDeleted == false ? c.DeviceTypeId : null
+                DeviceTypeId = c.DeviceTypeId
             }).ToList();
         }
         private static List<GetSimilarDeviceDto> GetSimilarDevicesConverter(List<Device> entities)
@@ -317,9 +317,9 @@ namespace DeviceManager.Business.Implementations
                 Temperature = c.Temperature,
 
                 DeviceStatus = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatus.Status : null,
-                DeviceStatusId = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatusId : null,
+                DeviceStatusId = c.DeviceStatusId,
                 DeviceType = c.DeviceType?.IsDeleted == false ? c.DeviceType.Type : null,
-                DeviceTypeId = c.DeviceType?.IsDeleted == false ? c.DeviceTypeId : null
+                DeviceTypeId = c.DeviceTypeId
             }).ToList();
         }
         private async Task<bool> LogDeviceStatusChange(long deviceId, long StatusId)

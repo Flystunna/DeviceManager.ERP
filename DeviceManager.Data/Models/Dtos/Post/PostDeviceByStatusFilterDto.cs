@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeviceManager.Data.Models.Dtos.Get
+namespace DeviceManager.Data.Models.Dtos.Post
 {
-    public class GetDeviceByStatusFilterDto
+    public class PostDeviceByStatusFilterDto
     {
         public int pageNumber { get; set; }
         public int pageSize { get; set; }

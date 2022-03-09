@@ -2,6 +2,7 @@
 using DeviceManager.Data.Models.Dtos.Get;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -116,6 +117,38 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             Assert.IsType<GetDeviceStatusLogDto>(result.Object);
         }
 
+
+        [Fact]
+        public async Task canGetDeviceStatusActivityLogByDeviceId()
+        {
+            using var application = new WebApplicationFactory<API.Startup>();
+            using var client = application.CreateClient();
+
+            var token = await GetTokenAsync();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            //Arrange Sample Object Creation
+            var createBody = new Data.Models.Dtos.Post.PostDeviceStatusLogDto
+            {
+                DeviceStatusId = 2,
+                DeviceId = 1
+            };
+            HttpContent createPayload = new StringContent(JsonConvert.SerializeObject(createBody), Encoding.UTF8, "application/json");
+
+            var createRequest = await client.PostAsync("/api/v1/devicestatuslog/AddAsync", createPayload);
+            var createResponse = await createRequest.Content.ReadAsStringAsync();
+            ServiceResponse<GetDeviceStatusLogDto> createResult = JsonConvert.DeserializeObject<ServiceResponse<GetDeviceStatusLogDto>>(createResponse);
+
+            var request = await client.GetAsync($"/api/v1/devicestatuslog/GetDeviceStatusActivityLog/{createResult.Object.DeviceId}/{1}");
+            var response = await request.Content.ReadAsStringAsync();
+
+            ServiceResponse<List<GetDeviceStatusActivityLogDto>> result = JsonConvert.DeserializeObject<ServiceResponse<List<GetDeviceStatusActivityLogDto>>>(response);
+
+            Assert.Equal(200, (int)request.StatusCode);
+            Assert.NotNull(result.Object);
+        }
+
+
         [Fact]
         public async Task canUpdateDeviceStausLog()
         {
@@ -140,7 +173,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             //Arrange Sample Object update
             var updateBody = new Data.Models.Dtos.Put.PutDeviceStatusLogDto
             {
-                DeviceStatusId = 2,
+                DeviceStatusId = 1,
                 DeviceId = 1
             };
             HttpContent updatePayload = new StringContent(JsonConvert.SerializeObject(updateBody), Encoding.UTF8, "application/json");

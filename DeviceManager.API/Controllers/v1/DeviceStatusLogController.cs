@@ -3,6 +3,7 @@ using DeviceManager.Business.Interfaces;
 using DeviceManager.Data.Models.Dtos.Get;
 using DeviceManager.Data.Models.Dtos.Post;
 using DeviceManager.Data.Models.Dtos.Put;
+using DeviceManager.Data.Models.Enums;
 using IPagedList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -85,13 +86,14 @@ namespace DeviceManager.API.Controllers.v1
         /// Get Device Status Activity Log 
         /// </summary>
         /// <param name="deviceId"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetDeviceStatusActivityLog/{deviceId}")]
-        public async Task<IServiceResponse<List<GetDeviceStatusActivityLogDto>>> GetDeviceStatusActivityLog(long deviceId)
+        [Route("GetDeviceStatusActivityLog/{deviceId}/{filter}")]
+        public async Task<IServiceResponse<List<GetDeviceStatusActivityLogDto>>> GetDeviceStatusActivityLog(long deviceId, GroupDeviceStatusActivityLogFilter filter)
         {
             return await HandleApiOperationAsync(async () => {
-                var responseOBJ = await _deviceStatusLogSvc.GetDeviceStatusActivityLog(deviceId);
+                var responseOBJ = await _deviceStatusLogSvc.GetDeviceStatusActivityLog(deviceId, filter);
                 return new ServiceResponse<List<GetDeviceStatusActivityLogDto>>
                 {
                     Object = responseOBJ

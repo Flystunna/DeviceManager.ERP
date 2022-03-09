@@ -9,6 +9,7 @@ using System.Net.Http;
 using DeviceManager.Business.Implementations;
 using System.Net.Http.Headers;
 using DeviceManager.Data.Models.Dtos.Get;
+using DeviceManager.Data.Models.Dtos.Post;
 
 namespace DeviceManager.IntegrationTests.IntegrationTests
 {
@@ -65,7 +66,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             var token = await GetTokenAsync();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var body = new Data.Models.Dtos.Post.PostDeviceDto
+            var body = new PostDeviceDto
             {
                 DeviceStatusId = 1,
                 DeviceTypeId = 1,
@@ -86,7 +87,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         {
             using var application = new WebApplicationFactory<API.Startup>();
             using var client = application.CreateClient();
-            var body = new Data.Models.Dtos.Post.PostDeviceDto
+            var body = new PostDeviceDto
             {
                 DeviceStatusId = 1,
                 DeviceTypeId = 1,
@@ -134,6 +135,30 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         }
 
         [Fact]
+        public async Task canGetPaginatedDevicesByStatus()
+        {
+            using var application = new WebApplicationFactory<API.Startup>();
+            using var client = application.CreateClient();
+
+            var token = await GetTokenAsync();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var body = new PostDeviceByStatusFilterDto
+            {
+                pageSize = 10,
+                pageNumber = 1,
+                query = "",
+                DeviceStatusId = 1
+            };
+            HttpContent payload = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync("/api/v1/devices/GetPagedDeviceByStatusAsync", payload);
+            var response = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal(200, (int)request.StatusCode);
+        }
+
+        [Fact]
         public async Task canGetDeviceById()
         {
             using var application = new WebApplicationFactory<API.Startup>();
@@ -143,7 +168,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //Arrange Sample Object Creation
-            var createBody = new Data.Models.Dtos.Post.PostDeviceDto
+            var createBody = new PostDeviceDto
             {
                 DeviceStatusId = 1,
                 DeviceTypeId = 1,
@@ -177,7 +202,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //Arrange Sample Object Creation
-            var createBody = new Data.Models.Dtos.Post.PostDeviceDto
+            var createBody = new PostDeviceDto
             {
                 DeviceStatusId = 1,
                 DeviceTypeId = 1,
@@ -221,7 +246,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //Arrange Sample Object Creation
-            var createBody = new Data.Models.Dtos.Post.PostDeviceDto
+            var createBody = new PostDeviceDto
             {
                 DeviceStatusId = 1,
                 DeviceTypeId = 1,

@@ -1,6 +1,7 @@
 ﻿using DeviceManager.Business.Implementations;
 using DeviceManager.Business.Interfaces;
 using DeviceManager.Data.Models.Dtos.Get;
+using DeviceManager.Data.Models.Dtos.Post;
 using IPagedList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -65,11 +66,11 @@ namespace DeviceManager.API.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("GetDeviceByStatusPagedAsync")]
-        public async Task<IServiceResponse<IPagedList<GetDeviceDto>>> GetDeviceByStatusPagedAsync(GetDeviceByStatusFilterDto model)
+        [Route("GetPagedDeviceByStatusAsync")]
+        public async Task<IServiceResponse<IPagedList<GetDeviceDto>>> GetPagedDeviceByStatusAsync(PostDeviceByStatusFilterDto model)
         {
             return await HandleApiOperationAsync(async () => {
-                var responseOBJ = await _deviceSvc.GetDeviceByStatusPagedAsync(model);
+                var responseOBJ = await _deviceSvc.GetPagedDeviceByStatusAsync(model);
                 return new ServiceResponse<IPagedList<GetDeviceDto>>
                 {
                     Object = responseOBJ
