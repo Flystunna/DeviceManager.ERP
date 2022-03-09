@@ -61,6 +61,23 @@ namespace DeviceManager.API.Controllers.v1
         }
 
         /// <summary>
+        /// Get Device By Status Paged Record With Page Number, Page Size, Search Term
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("GetDeviceByStatusPagedAsync")]
+        public async Task<IServiceResponse<IPagedList<GetDeviceDto>>> GetDeviceByStatusPagedAsync(GetDeviceByStatusFilterDto model)
+        {
+            return await HandleApiOperationAsync(async () => {
+                var responseOBJ = await _deviceSvc.GetDeviceByStatusPagedAsync(model);
+                return new ServiceResponse<IPagedList<GetDeviceDto>>
+                {
+                    Object = responseOBJ
+                };
+            });
+        }
+
+        /// <summary>
         /// Get Device
         /// </summary>
         /// <param name="id"></param>

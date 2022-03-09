@@ -94,6 +94,36 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
+        public async Task<IPagedList<GetDeviceDto>> GetDeviceByStatusPagedAsync(GetDeviceByStatusFilterDto model)
+        {
+            try
+            {
+                var ifExistDeviceStatus = await _deviceStatusSvc.IfExists(model.DeviceStatusId);
+                if (!ifExistDeviceStatus)
+                    throw new GenericException("Invalid Device Status", StatusCodes.Status400BadRequest);
+
+                if (model.pageNumber == 0) model.pageNumber = 1;
+                if (model.pageSize == 0) model.pageSize = Core.Utils.CoreConstants.DefaultPageSize;
+
+                var getall = await GetAllByDeviceStatusIdAsync(model.DeviceStatusId);
+                if (getall == null)
+                    throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
+
+                if (!string.IsNullOrEmpty(model.query) && !string.IsNullOrWhiteSpace(model.query))
+                {
+                    getall = getall.Where(c => c.Name.ToLower().Contains(model.query.ToLower())
+                    || c.DeviceStatus.ToLower().Contains(model.query.ToLower())
+                    || c.DeviceType.ToLower().Contains(model.query.ToLower())
+                    ).ToList();
+                }
+                return await getall.AsQueryable().ToPagedListAsync(model.pageNumber, model.pageSize);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToBetterString());
+                throw;
+            }
+        }
         public async Task<GetDeviceDto> GetAsync(long Id)
         {
             try
@@ -226,6 +256,17 @@ namespace DeviceManager.Business.Implementations
         {
             var getall = await _deviceRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c=>c.DeviceType).ToListAsync();
             if(getall != null)  
+                return GetDevicesConverter(getall);
+            return null;
+        }
+
+        private async Task<List<GetDeviceDto>> GetAllByDeviceStatusIdAsync(long deviceStatusId)
+        {
+            var getall = await _deviceRepo.GetAll(c => c.IsDeleted == false && c.DeviceStatusId == deviceStatusId)
+                .AsNoTracking()
+                .Include(c => c.DeviceStatus)
+                .Include(c => c.DeviceType).ToListAsync();
+            if (getall != null)
                 return GetDevicesConverter(getall);
             return null;
         }
