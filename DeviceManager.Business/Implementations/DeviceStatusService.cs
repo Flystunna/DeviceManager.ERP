@@ -62,12 +62,12 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var getall = await GetAllAsync();
+                var getall = GetAll();
                 if (!string.IsNullOrEmpty(query) && !string.IsNullOrWhiteSpace(query))
                 {
-                    getall = getall.Where(c => c.Status.ToLower().Contains(query.ToLower())).ToList();
+                    return await getall.Where(c => c.Status.ToLower().Contains(query.ToLower())).ToPagedListAsync(pageNumber, pageSize);
                 }
-                return await getall.AsQueryable().ToPagedListAsync(pageNumber, pageSize);
+                return await getall.ToPagedListAsync(pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -157,9 +157,9 @@ namespace DeviceManager.Business.Implementations
             };
         }
 
-        private async Task<List<GetDeviceStatusDto>> GetAllAsync()
+        private IQueryable<GetDeviceStatusDto> GetAll()
         {
-            var getall = await _deviceStatusRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().ToListAsync();
+            var getall = _deviceStatusRepo.GetAll(c => c.IsDeleted == false).AsNoTracking();
             return getall.Select(c => new GetDeviceStatusDto
             {
                 Id = c.Id,
@@ -168,7 +168,7 @@ namespace DeviceManager.Business.Implementations
                 LastModificationTime = c.LastModificationTime,
                 LastModifierUserId = c.LastModifierUserId,
                 Status = c.Status
-            }).ToList();
+            });
         }
     }
 }

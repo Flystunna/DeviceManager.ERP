@@ -61,12 +61,14 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var getall = await GetAllAsync();
+                var getall = GetAll();
                 if (!string.IsNullOrEmpty(query) && !string.IsNullOrWhiteSpace(query))
                 {
-                    getall = getall.Where(c => c.DeviceStatus.ToLower().Contains(query.ToLower()) || c.Device.ToLower().Contains(query.ToLower())).ToList();
+                    return await getall.Where(c => c.DeviceStatus.ToLower().Contains(query.ToLower()) 
+                    || c.Device.ToLower().Contains(query.ToLower()))
+                        .ToPagedListAsync(pageNumber, pageSize);
                 }
-                return await getall.AsQueryable().ToPagedListAsync(pageNumber, pageSize);
+                return await getall.ToPagedListAsync(pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -109,13 +111,13 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var devicelog = await _deviceStatusLogRepo.GetAll().Where(c => c.IsDeleted == false && c.DeviceId == deviceId).Include(c => c.DeviceStatus).ToListAsync();
+                var devicelog = _deviceStatusLogRepo.GetAll(c => c.IsDeleted == false && c.DeviceId == deviceId).AsNoTracking().Include(c => c.DeviceStatus);
                 if (devicelog != null)
                 {
                     switch (filter)
                     {
                         case GroupDeviceStatusActivityLogFilter.Daily:
-                            return devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Date })
+                            return await devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Date })
                                 .Select(r => new GetDeviceStatusActivityLogDto
                                 {
                                     DeviceId = r.Key.DeviceId,
@@ -123,9 +125,9 @@ namespace DeviceManager.Business.Implementations
                                     DeviceStatus = _deviceStatusRepo.LookUpDeviceStatusByDeviceStatusId(r.Key.DeviceStatusId),
                                     Date = r.Key.Date.ToShortDateString(),
                                     Count = r.Count()
-                                }).ToList();
+                                }).ToListAsync();
                         case GroupDeviceStatusActivityLogFilter.Monthly:
-                            return devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Month, x.CreationTime.Year })
+                            return await devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Month, x.CreationTime.Year })
                                 .Select(r => new GetDeviceStatusActivityLogDto
                                 {
                                     DeviceId = r.Key.DeviceId,
@@ -134,9 +136,9 @@ namespace DeviceManager.Business.Implementations
                                     Month = r.Key.Month.ToString(),
                                     Year = r.Key.Year.ToString(),
                                     Count = r.Count()
-                                }).ToList();
+                                }).ToListAsync();
                         case GroupDeviceStatusActivityLogFilter.Yearly:
-                            return devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Year })
+                            return await devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Year })
                                 .Select(r => new GetDeviceStatusActivityLogDto
                                 {
                                     DeviceId = r.Key.DeviceId,
@@ -144,9 +146,9 @@ namespace DeviceManager.Business.Implementations
                                     DeviceStatus = _deviceStatusRepo.LookUpDeviceStatusByDeviceStatusId(r.Key.DeviceStatusId),
                                     Year = r.Key.Year.ToString(),
                                     Count = r.Count()
-                                }).ToList();
+                                }).ToListAsync();
                         default:
-                            return devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Date })
+                            return await devicelog.GroupBy(x => new { x.DeviceId, x.DeviceStatusId, x.CreationTime.Date })
                                .Select(r => new GetDeviceStatusActivityLogDto
                                {
                                    DeviceId = r.Key.DeviceId,
@@ -154,7 +156,7 @@ namespace DeviceManager.Business.Implementations
                                    DeviceStatus = _deviceStatusRepo.LookUpDeviceStatusByDeviceStatusId(r.Key.DeviceStatusId),
                                    Date = r.Key.Date.ToString(),
                                    Count = r.Count()
-                               }).ToList();
+                               }).ToListAsync();
                     }
                 }
                 return null;
@@ -225,9 +227,9 @@ namespace DeviceManager.Business.Implementations
                 DeviceId = entity.DeviceId
             };
         }
-        private async Task<List<GetDeviceStatusLogDto>> GetAllAsync()
+        private IQueryable<GetDeviceStatusLogDto> GetAll()
         {
-            var getall = await _deviceStatusLogRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c => c.Device).ToListAsync();
+            var getall = _deviceStatusLogRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c => c.Device);
             return getall.Select(c => new GetDeviceStatusLogDto
             {
                 Id = c.Id,
@@ -236,11 +238,11 @@ namespace DeviceManager.Business.Implementations
                 LastModificationTime = c.LastModificationTime,
                 LastModifierUserId = c.LastModifierUserId,
 
-                DeviceStatus = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatus?.Status : null,
+                DeviceStatus = c.DeviceStatus != null ? c.DeviceStatus.IsDeleted == false ? c.DeviceStatus.Status : null : null,
                 DeviceStatusId = c.DeviceStatusId,
-                Device = c.Device?.IsDeleted == false ? c.Device?.Name : null,
+                Device = c.Device != null ? c.Device.IsDeleted == false ? c.Device.Name : null : null,
                 DeviceId = c.DeviceId
-            }).ToList();
+            });
         }
     }
 }

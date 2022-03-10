@@ -75,18 +75,19 @@ namespace DeviceManager.Business.Implementations
         {
             try
             {
-                var getall = await GetAllAsync();
+                var get = _deviceRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c => c.DeviceType).AsQueryable();
+                var getall =  GetDevicesConverter(get);
                 if(getall == null)
                     throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
 
                 if (!string.IsNullOrEmpty(query) && !string.IsNullOrWhiteSpace(query))
                 {
-                    getall = getall.Where(c => c.Name.ToLower().Contains(query.ToLower())
+                    return await getall.Where(c => c.Name.ToLower().Contains(query.ToLower())
                     || c.DeviceStatus.ToLower().Contains(query.ToLower())
                     || c.DeviceType.ToLower().Contains(query.ToLower())
-                    ).ToList();         
+                    ).ToPagedListAsync(pageNumber, pageSize);         
                 }
-                return await getall.AsQueryable().ToPagedListAsync(pageNumber, pageSize);
+                return await getall.ToPagedListAsync(pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -105,18 +106,18 @@ namespace DeviceManager.Business.Implementations
                 if (model.pageNumber == 0) model.pageNumber = 1;
                 if (model.pageSize == 0) model.pageSize = Core.Utils.CoreConstants.DefaultPageSize;
 
-                var getall = await GetAllByDeviceStatusIdAsync(model.DeviceStatusId);
+                var getall = GetAllByDeviceStatusIdAsync(model.DeviceStatusId);
                 if (getall == null)
                     throw new GenericException("No Data Found", StatusCodes.Status400BadRequest);
 
                 if (!string.IsNullOrEmpty(model.query) && !string.IsNullOrWhiteSpace(model.query))
                 {
-                    getall = getall.Where(c => c.Name.ToLower().Contains(model.query.ToLower())
+                    return await getall.Where(c => c.Name.ToLower().Contains(model.query.ToLower())
                     || c.DeviceStatus.ToLower().Contains(model.query.ToLower())
                     || c.DeviceType.ToLower().Contains(model.query.ToLower())
-                    ).ToList();
+                    ).ToPagedListAsync(model.pageNumber, model.pageSize);
                 }
-                return await getall.AsQueryable().ToPagedListAsync(model.pageNumber, model.pageSize);
+                return await getall.ToPagedListAsync(model.pageNumber, model.pageSize);
             }
             catch (Exception ex)
             {
@@ -228,16 +229,13 @@ namespace DeviceManager.Business.Implementations
             try
             {
                 var device = await _deviceRepo.GetAsyncAsNoTracking(c=>c.Id == deviceId && c.IsDeleted == false);
-                if (device == null)
-                {
+                if (device == null) 
                     return null;
-                }
 
-                var similar = await _deviceRepo.GetAll().AsNoTracking()
-                    .Where(c => c.DeviceTypeId == device.DeviceTypeId 
-                    && c.IsDeleted == false 
-                    && c.Id != deviceId)
-                    .Include(c=>c.DeviceStatus).Include(c=>c.DeviceType).ToListAsync();
+                var similar = _deviceRepo.GetAll(c => c.DeviceTypeId == device.DeviceTypeId && c.IsDeleted == false && c.Id != deviceId)
+                    .AsNoTracking()
+                    .Include(c=>c.DeviceStatus)
+                    .Include(c=>c.DeviceType);
 
                 if (similar != null)
                 {
@@ -252,20 +250,13 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        public async Task<List<GetDeviceDto>> GetAllAsync()
-        {
-            var getall = await _deviceRepo.GetAll(c => c.IsDeleted == false).AsNoTracking().Include(c => c.DeviceStatus).Include(c=>c.DeviceType).ToListAsync();
-            if(getall != null)  
-                return GetDevicesConverter(getall);
-            return null;
-        }
 
-        private async Task<List<GetDeviceDto>> GetAllByDeviceStatusIdAsync(long deviceStatusId)
+        private IQueryable<GetDeviceDto> GetAllByDeviceStatusIdAsync(long deviceStatusId)
         {
-            var getall = await _deviceRepo.GetAll(c => c.IsDeleted == false && c.DeviceStatusId == deviceStatusId)
+            var getall = _deviceRepo.GetAll(c => c.IsDeleted == false && c.DeviceStatusId == deviceStatusId)
                 .AsNoTracking()
                 .Include(c => c.DeviceStatus)
-                .Include(c => c.DeviceType).ToListAsync();
+                .Include(c => c.DeviceType);
             if (getall != null)
                 return GetDevicesConverter(getall);
             return null;
@@ -290,7 +281,7 @@ namespace DeviceManager.Business.Implementations
             };
         }
 
-        private static List<GetDeviceDto> GetDevicesConverter(List<Device> entities)
+        private static IQueryable<GetDeviceDto> GetDevicesConverter(IQueryable<Device> entities)
         {
             return entities.Select(c => new GetDeviceDto
             {
@@ -298,17 +289,17 @@ namespace DeviceManager.Business.Implementations
                 Name = c.Name,
                 CreationTime = c.CreationTime,
                 CreatorUserId = c.CreatorUserId,
-                LastModificationTime = c.LastModificationTime,
+                LastModificationTime = c.LastModificationTime, 
                 LastModifierUserId = c.LastModifierUserId,
                 Temperature = c.Temperature,
 
-                DeviceStatus = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatus.Status : null,
+                DeviceStatus = c.DeviceStatus != null ? c.DeviceStatus.IsDeleted == false ? c.DeviceStatus.Status : null : null,
                 DeviceStatusId = c.DeviceStatusId,
-                DeviceType = c.DeviceType?.IsDeleted == false ? c.DeviceType.Type : null,
+                DeviceType = c.DeviceType != null ? c.DeviceType.IsDeleted == false ? c.DeviceType.Type : null : null,
                 DeviceTypeId = c.DeviceTypeId
-            }).ToList();
+            });
         }
-        private static List<GetSimilarDeviceDto> GetSimilarDevicesConverter(List<Device> entities)
+        private static List<GetSimilarDeviceDto> GetSimilarDevicesConverter(IQueryable<Device> entities)
         {
             return entities.Select(c => new GetSimilarDeviceDto
             {
@@ -316,9 +307,9 @@ namespace DeviceManager.Business.Implementations
                 Name = c.Name,
                 Temperature = c.Temperature,
 
-                DeviceStatus = c.DeviceStatus?.IsDeleted == false ? c.DeviceStatus.Status : null,
+                DeviceStatus = c.DeviceStatus != null ? c.DeviceStatus.IsDeleted == false ? c.DeviceStatus.Status : null : null,
                 DeviceStatusId = c.DeviceStatusId,
-                DeviceType = c.DeviceType?.IsDeleted == false ? c.DeviceType.Type : null,
+                DeviceType = c.DeviceType != null ? c.DeviceType.IsDeleted == false ? c.DeviceType.Type : null : null,
                 DeviceTypeId = c.DeviceTypeId
             }).ToList();
         }
