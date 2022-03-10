@@ -95,7 +95,7 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-        public async Task<IPagedList<GetDeviceDto>> GetPagedDeviceByStatusAsync(PostDeviceByStatusFilterDto model)
+        public async Task<IPagedList<GetDeviceDto>> GetPagedDeviceByStatusAsync(GetDeviceByStatusFilterDto model)
         {
             try
             {

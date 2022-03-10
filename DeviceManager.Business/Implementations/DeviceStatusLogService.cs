@@ -106,7 +106,38 @@ namespace DeviceManager.Business.Implementations
                 throw;
             }
         }
-
+        public async Task<List<GetDeviceStatusActivityLogDto>> GetAllDeviceStatusActivityLog(long DeviceStatusId)
+        {
+            var getall = GetAll();
+            if (getall != null)
+            {
+                if(DeviceStatusId != 0)
+                {
+                    var results = getall.Where(c=>c.DeviceStatusId == DeviceStatusId).GroupBy(x => new { x.DeviceId, x.DeviceStatusId })
+                        .Select(r => new GetDeviceStatusActivityLogDto
+                        {
+                            DeviceId = (long)r.Key.DeviceId,
+                            DeviceStatusId = (long)r.Key.DeviceStatusId,
+                            DeviceStatus = _deviceStatusRepo.LookUpDeviceStatusByDeviceStatusId((long)r.Key.DeviceStatusId),
+                            Count = r.Count()
+                        });
+                    return await results.ToListAsync();
+                }
+                else
+                {
+                    var results = getall.GroupBy(x => new { x.DeviceId, x.DeviceStatusId })
+                        .Select(r => new GetDeviceStatusActivityLogDto
+                        {
+                            DeviceId = (long)r.Key.DeviceId,
+                            DeviceStatusId = (long)r.Key.DeviceStatusId,
+                            DeviceStatus = _deviceStatusRepo.LookUpDeviceStatusByDeviceStatusId((long)r.Key.DeviceStatusId),
+                            Count = r.Count()
+                        });
+                    return await results.ToListAsync();
+                }
+            }
+            return null;
+        }
         public async Task<List<GetDeviceStatusActivityLogDto>> GetDeviceStatusActivityLog(long deviceId, GroupDeviceStatusActivityLogFilter filter)
         {
             try

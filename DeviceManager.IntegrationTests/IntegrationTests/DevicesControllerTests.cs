@@ -143,7 +143,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             var token = await GetTokenAsync();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var body = new PostDeviceByStatusFilterDto
+            var body = new GetDeviceByStatusFilterDto
             {
                 pageSize = 10,
                 pageNumber = 1,

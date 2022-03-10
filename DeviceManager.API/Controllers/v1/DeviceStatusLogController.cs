@@ -81,19 +81,34 @@ namespace DeviceManager.API.Controllers.v1
             });
         }
 
-
         /// <summary> 
-        /// Get Device Status Activity Log 
+        /// Get All Device Status Activity Log 
         /// </summary>
-        /// <param name="deviceId"></param>
-        /// <param name="filter"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("GetDeviceStatusActivityLog/{deviceId}/{filter}")]
-        public async Task<IServiceResponse<List<GetDeviceStatusActivityLogDto>>> GetDeviceStatusActivityLog(long deviceId, GroupDeviceStatusActivityLogFilter filter)
+        [HttpPost]
+        [Route("GetAllDeviceStatusActivityLog")]
+        public async Task<IServiceResponse<List<GetDeviceStatusActivityLogDto>>> GetAllDeviceStatusActivityLog(GetAllDeviceStatusActivityLogFilterDto model)
         {
             return await HandleApiOperationAsync(async () => {
-                var responseOBJ = await _deviceStatusLogSvc.GetDeviceStatusActivityLog(deviceId, filter);
+                var responseOBJ = await _deviceStatusLogSvc.GetAllDeviceStatusActivityLog(model.DeviceStatusId);
+                return new ServiceResponse<List<GetDeviceStatusActivityLogDto>>
+                {
+                    Object = responseOBJ
+                };
+            });
+        }
+
+        /// <summary> 
+        /// Get Single Device Status Activity Log 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("GetDeviceStatusActivityLog")]
+        public async Task<IServiceResponse<List<GetDeviceStatusActivityLogDto>>> GetDeviceStatusActivityLog(GetDeviceStatusActivityLogFilterDto filter)
+        {
+            return await HandleApiOperationAsync(async () => {
+                var responseOBJ = await _deviceStatusLogSvc.GetDeviceStatusActivityLog(filter.DeviceId, filter.GroupByFilter);
                 return new ServiceResponse<List<GetDeviceStatusActivityLogDto>>
                 {
                     Object = responseOBJ

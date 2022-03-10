@@ -67,7 +67,7 @@ namespace DeviceManager.API.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route("GetPagedDeviceByStatusAsync")]
-        public async Task<IServiceResponse<IPagedList<GetDeviceDto>>> GetPagedDeviceByStatusAsync(PostDeviceByStatusFilterDto model)
+        public async Task<IServiceResponse<IPagedList<GetDeviceDto>>> GetPagedDeviceByStatusAsync(GetDeviceByStatusFilterDto model)
         {
             return await HandleApiOperationAsync(async () => {
                 var responseOBJ = await _deviceSvc.GetPagedDeviceByStatusAsync(model);

@@ -13,7 +13,7 @@ namespace DeviceManager.Business.Interfaces
         Task<GetDeviceDto> GetAsync(long Id);
         Task<List<GetSimilarDeviceDto>> GetSimilarDevices(long deviceId);
         Task<IPagedList<GetDeviceDto>> GetPagedAsync(int pageNumber, int pageSize, string query);
-        Task<IPagedList<GetDeviceDto>> GetPagedDeviceByStatusAsync(PostDeviceByStatusFilterDto model);
+        Task<IPagedList<GetDeviceDto>> GetPagedDeviceByStatusAsync(GetDeviceByStatusFilterDto model);
         Task<GetDeviceDto> UpdateAsync(long Id, PutDeviceDto model);
         Task<bool> DeleteAsync(long Id);
     }

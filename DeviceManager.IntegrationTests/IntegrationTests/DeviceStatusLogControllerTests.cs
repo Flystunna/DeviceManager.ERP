@@ -31,7 +31,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         }
 
         [Fact]
-        public async Task canAddDeviceStatusLogWithAuthorization()
+        public async Task canAddDeviceStatusActivityLogWithAuthorization()
         {
             using var application = new WebApplicationFactory<API.Startup>();
             using var client = application.CreateClient();
@@ -55,7 +55,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         }
 
         [Fact]
-        public async Task canNotAddDeviceStatusLogWithoutAuthorization()
+        public async Task canNotAddDeviceStatusActivityLogWithoutAuthorization()
         {
             using var application = new WebApplicationFactory<API.Startup>();
             using var client = application.CreateClient();
@@ -72,7 +72,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         }
 
         [Fact]
-        public async Task canGetPaginatedDeviceStatusLog()
+        public async Task canGetPaginatedDeviceStatusActivityLog()
         {
             using var application = new WebApplicationFactory<API.Startup>();
             using var client = application.CreateClient();
@@ -87,7 +87,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         }
 
         [Fact]
-        public async Task canGetDeviceStatusLogById()
+        public async Task canGetDeviceStatusActivityLogById()
         {
             using var application = new WebApplicationFactory<API.Startup>();
             using var client = application.CreateClient();
@@ -119,6 +119,30 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
 
 
         [Fact]
+        public async Task canGetAllDeviceStatusActivityLog()
+        {
+            using var application = new WebApplicationFactory<API.Startup>();
+            using var client = application.CreateClient();
+
+            var token = await GetTokenAsync();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var body = new GetAllDeviceStatusActivityLogFilterDto
+            {
+                DeviceStatusId = 1
+            };
+            HttpContent payload = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync($"/api/v1/devicestatuslog/GetAllDeviceStatusActivityLog", payload);
+            var response = await request.Content.ReadAsStringAsync();
+
+            ServiceResponse<List<GetDeviceStatusActivityLogDto>> result = JsonConvert.DeserializeObject<ServiceResponse<List<GetDeviceStatusActivityLogDto>>>(response);
+
+            Assert.Equal(200, (int)request.StatusCode);
+            Assert.NotNull(result.Object);
+        }
+
+        [Fact]
         public async Task canGetDeviceStatusActivityLogByDeviceId()
         {
             using var application = new WebApplicationFactory<API.Startup>();
@@ -139,7 +163,14 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             var createResponse = await createRequest.Content.ReadAsStringAsync();
             ServiceResponse<GetDeviceStatusLogDto> createResult = JsonConvert.DeserializeObject<ServiceResponse<GetDeviceStatusLogDto>>(createResponse);
 
-            var request = await client.GetAsync($"/api/v1/devicestatuslog/GetDeviceStatusActivityLog/{createResult.Object.DeviceId}/{1}");
+            var body = new GetDeviceStatusActivityLogFilterDto
+            {
+                GroupByFilter = Data.Models.Enums.GroupDeviceStatusActivityLogFilter.Daily,
+                DeviceId = createResult.Object.DeviceId.GetValueOrDefault()
+            };
+            HttpContent payload = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync($"/api/v1/devicestatuslog/GetDeviceStatusActivityLog", payload);
             var response = await request.Content.ReadAsStringAsync();
 
             ServiceResponse<List<GetDeviceStatusActivityLogDto>> result = JsonConvert.DeserializeObject<ServiceResponse<List<GetDeviceStatusActivityLogDto>>>(response);
@@ -148,9 +179,8 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
             Assert.NotNull(result.Object);
         }
 
-
         [Fact]
-        public async Task canUpdateDeviceStausLog()
+        public async Task canUpdateDeviceStausActivityLog()
         {
             //Act
             using var application = new WebApplicationFactory<API.Startup>();
@@ -192,7 +222,7 @@ namespace DeviceManager.IntegrationTests.IntegrationTests
         }
 
         [Fact]
-        public async Task canDeleteDeviceStatusLog()
+        public async Task canDeleteDeviceStatusActivityLog()
         {
             //Act
             using var application = new WebApplicationFactory<API.Startup>();
