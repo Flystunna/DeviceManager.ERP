@@ -12,3 +12,5 @@ Database connection string can be found in the appsettings.json file.
 There is a seed database file which prepopulates test data when the application starts for the first time and connects to a database successfully.
 
 
+Sentry is integrated for error reporting
+
