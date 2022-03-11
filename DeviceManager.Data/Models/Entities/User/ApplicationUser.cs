@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 
-namespace DeviceManager.Data.Models.Entities
+namespace DeviceManager.Data.Models.Entities.User
 {
     public class ApplicationUser: IdentityUser<long>
     {
@@ -16,9 +16,9 @@ namespace DeviceManager.Data.Models.Entities
         public bool? IsLoggedIn { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public string LastLoginIP { get; set; }
-        public int? CreatorUserId { get; set; }
-        public int? LastModifierUserId { get; set; }
-        public int? DeleterUserId { get; set; }
+        public long? CreatorUserId { get; set; }
+        public long? LastModifierUserId { get; set; }
+        public long? DeleterUserId { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime? LastModificationTime { get; set; }
         public DateTime? DeletionTime { get; set; }

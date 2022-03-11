@@ -225,6 +225,18 @@ namespace DeviceManager.Repository.Implementations
         {
             return _entity.FirstOrDefault(filter);
         }
+        public TEntity GetAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _entity;
+
+            if (includeProperties != null)
+            {
+                query = includeProperties.Aggregate(query,
+                          (current, include) => current.Include(include));
+            }
+
+            return query.AsNoTracking().FirstOrDefault(filter);
+        }
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _entity;
@@ -236,6 +248,18 @@ namespace DeviceManager.Repository.Implementations
             }
 
             return await query.FirstOrDefaultAsync(filter);
+        }
+        public async Task<TEntity> GetAsyncAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _entity;
+
+            if (includeProperties != null)
+            {
+                query = includeProperties.Aggregate(query,
+                          (current, include) => current.Include(include));
+            }
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(filter);
         }
         #endregion
 

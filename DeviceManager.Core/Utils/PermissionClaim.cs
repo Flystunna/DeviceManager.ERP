@@ -19,12 +19,13 @@ namespace DeviceManager.Core.Utils
         {
             return new Dictionary<string, IEnumerable<PermissionClaim>>
             {
-                {   Roles.SuperAdmin, new PermissionClaim []{ Configuration, Dashboard }}
+                {   Roles.SuperAdmin, new PermissionClaim []{ Configuration, Dashboard, UserManagement }}
             };
         }
     }
     public static class Roles
     {
         public const string SuperAdmin = "SuperAdmin";
+        public const string User = "User";
     }
 }

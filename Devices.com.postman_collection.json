@@ -1,0 +1,884 @@
+{
+	"info": {
+		"_postman_id": "296b0baf-4063-4ebd-872f-c3f8427bdcb7",
+		"name": "Devices.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Device",
+			"item": [
+				{
+					"name": "Get Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devices/getasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"getasync",
+								"1"
+							]
+						},
+						"description": "Get Device By Id Async"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Async",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"New Device from postman\",\r\n  \"deviceTypeId\": 1,\r\n  \"deviceStatusId\": 1,\r\n  \"temperature\": 50.25\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devices/addasync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"addasync"
+							]
+						},
+						"description": "Add new Device"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devices/getpagedasync/1/10/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"getpagedasync",
+								"1",
+								"10",
+								""
+							]
+						},
+						"description": "Get Paginated List of Devices Async"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async With Query/Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devices/getpagedasync/1/10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"getpagedasync",
+								"1",
+								"10"
+							]
+						},
+						"description": "Get Paginated List of Devices Async with search term.\n\nReplace query with the intended search term\n\ne.g\n\nhttps://localhost:44305/api/v1/devices/getpagedasync/1/10/ios`         `"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Similar Devices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devices/getsimilardevices/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"getsimilardevices",
+								"1"
+							]
+						},
+						"description": "This takes a deviceId in the route to fetch all similar devices that have the same device type."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Async",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"New Device Changed To New Device Updated\",\r\n  \"deviceTypeId\": 1,\r\n  \"deviceStatusId\": 1,\r\n  \"temperature\": 50.25\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devices/updateasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"updateasync",
+								"1"
+							]
+						},
+						"description": "Update Device Async"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Async",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devices/deleteasync/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"deleteasync",
+								"2"
+							]
+						},
+						"description": "Delete Device Async.\n\nSoft deletion mechanism installed in the API"
+					},
+					"response": []
+				},
+				{
+					"name": "Get  Paged Device By Status Async",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"pageNumber\": 1,\r\n  \"pageSize\": 10,\r\n  \"query\": \"\",\r\n  \"deviceStatusId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devices/GetPagedDeviceByStatusAsync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devices",
+								"GetPagedDeviceByStatusAsync"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "List of APIs for managing Devices"
+		},
+		{
+			"name": "DeviceStatus",
+			"item": [
+				{
+					"name": "Add Async",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"SwitchedOff\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatus/addasync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatus",
+								"addasync"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatus/getpagedasync/1/10/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatus",
+								"getpagedasync",
+								"1",
+								"10",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async With Query/Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatus/getpagedasync/1/10/query",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatus",
+								"getpagedasync",
+								"1",
+								"10",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatus/getasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatus",
+								"getasync",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Async",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"Inuse\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatus/updateasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatus",
+								"updateasync",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Async",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatus/deleteasync/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatus",
+								"deleteasync",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DeviceType",
+			"item": [
+				{
+					"name": "Add Async",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\": \"Chromebook\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicetype/addasync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicetype",
+								"addasync"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicetype/getpagedasync/1/10/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicetype",
+								"getpagedasync",
+								"1",
+								"10",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async With Query/Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicetype/getpagedasync/1/10/query",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicetype",
+								"getpagedasync",
+								"1",
+								"10",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicetype/getasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicetype",
+								"getasync",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Async",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\": \"Web\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicetype/updateasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicetype",
+								"updateasync",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Async",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicetype/deleteasync/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicetype",
+								"deleteasync",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DeviceStatusLog",
+			"item": [
+				{
+					"name": "Add Async",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"deviceId\": 1,\r\n  \"deviceStatusId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/addasync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"addasync"
+							]
+						},
+						"description": "This is used to register a device status change/activity log"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/getpagedasync/1/10/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"getpagedasync",
+								"1",
+								"10",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Paged Records With Query/Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/getpagedasync/1/10/query",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"getpagedasync",
+								"1",
+								"10",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Async",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/getasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"getasync",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Device Status Activity Log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"deviceId\": 1,\r\n  \"groupByFilter\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/GetDeviceStatusActivityLog",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"GetDeviceStatusActivityLog"
+							]
+						},
+						"description": "```\nThis endpoint is to get status activity logs for a single device and this offers the capability to group your results \nusing GroupDeviceStatusActivityLogFilter\nDaily = 1,\nMonthly = 2,\nYearly = 3\n\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Device Status Activity Log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"deviceStatusId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/getalldevicestatusactivitylog",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"getalldevicestatusactivitylog"
+							]
+						},
+						"description": "This endpoint is to get status activity logs for all devices and can filter by device status"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Async",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"deviceId\": 1,\r\n  \"deviceStatusId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/updateasync/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"updateasync",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Async",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/devicestatuslog/deleteasync/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"devicestatuslog",
+								"deleteasync",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register User Async",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"User User\",\r\n  \"password\": \"Admin12345.\",\r\n  \"email\": \"user@gmail.com\",\r\n  \"username\": \"User User\",\r\n  \"phoneNumber\": \"+234907765548\",\r\n  \"role\": \"User\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/user/registeruserasync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"registeruserasync"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"admin@devicemanager.com\",\r\n  \"password\": \"Admin12345.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/token/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"token",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Access Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"token\": \"string\",\r\n  \"refreshToken\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/token/RefreshToken",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"token",
+						"RefreshToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log User Time Out",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/token/logout/{userId}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"token",
+						"logout",
+						"{userId}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const base_url = pm.collectionVariables.get(\"base_url\");",
+					"const tokenUrl = base_url + '/v1/token/auth';",
+					"const getTokenRequest = {",
+					"    url: tokenUrl,",
+					"    method: 'POST',",
+					"    header: { 'content-type': 'application/json' },",
+					"    body: {",
+					"        mode: 'raw',",
+					"        raw: JSON.stringify(",
+					"            {",
+					"                \"username\": \"admin@devicemanager.com\",",
+					"                \"password\": \"Admin12345.\" ",
+					"            })",
+					"    }",
+					"};",
+					"",
+					"",
+					"pm.sendRequest(getTokenRequest, (err, response) => {",
+					"  const jsonResponse = response.json();",
+					"  console.log(jsonResponse);",
+					"  pm.collectionVariables.set('token', jsonResponse.object.token);",
+					"});",
+					"",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://localhost:44305/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

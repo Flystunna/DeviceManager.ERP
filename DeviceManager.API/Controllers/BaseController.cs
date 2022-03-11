@@ -20,9 +20,12 @@ namespace DeviceManager.API.Controllers
         {
             get
             {
-                if (HttpContext.User.Identity != null && HttpContext.User.Identity.IsAuthenticated)
+                if(HttpContext?.User != null)
                 {
-                    return new UserClaims(HttpContext.User);
+                    if (HttpContext.User.Identity != null && HttpContext.User.Identity.IsAuthenticated)
+                    {
+                        return new UserClaims(HttpContext.User);
+                    }
                 }
 
                 return null;
@@ -32,9 +35,12 @@ namespace DeviceManager.API.Controllers
         {
             get
             {
-                if (HttpContext.User.Identity != null && HttpContext.User.Identity.IsAuthenticated)
+                if(HttpContext?.User != null)
                 {
-                    return new UserClaims(HttpContext.User)?.UserName;
+                    if (HttpContext.User.Identity != null && HttpContext.User.Identity.IsAuthenticated)
+                    {
+                        return new UserClaims(HttpContext.User)?.UserName;
+                    }
                 }
 
                 return "Anonymous";

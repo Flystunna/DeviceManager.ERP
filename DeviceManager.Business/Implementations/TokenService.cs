@@ -1,6 +1,6 @@
 ﻿using DeviceManager.Business.Interfaces;
 using DeviceManager.Core.ExceptionHelpers;
-using DeviceManager.Data.Models.Entities;
+using DeviceManager.Data.Models.Entities.User;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -201,7 +201,7 @@ namespace DeviceManager.Business.Implementations
         /// </summary>
         /// <param name="roles"></param>
         /// <returns></returns>
-        public bool IsSuperAdmin(IList<string> roles)
+        public static bool IsSuperAdmin(IList<string> roles)
         {
             if (roles.Contains("SuperAdmin")) return true;
             return false;
@@ -212,7 +212,7 @@ namespace DeviceManager.Business.Implementations
         /// <param name="user"></param>
         /// <param name="roles"></param>
         /// <returns></returns>
-        public List<Claim> UserTokenClaims(ApplicationUser user, IList<string> roles)
+        public static List<Claim> UserTokenClaims(ApplicationUser user, IList<string> roles)
         {
             string role = roles.FirstOrDefault() ?? "";
 
@@ -265,14 +265,12 @@ namespace DeviceManager.Business.Implementations
         /// Generate Refresh Token
         /// </summary>
         /// <returns></returns>
-        public string GenerateRefreshToken()
+        public static string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace DeviceManager.Repository.Interfaces
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<TEntity, bool>> filter);
         TEntity Get(Expression<Func<TEntity, bool>> filter);
+        TEntity GetAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties);
         TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null);
         TEntity LastOrDefault(Expression<Func<TEntity, bool>> filter = null);
 
@@ -44,6 +45,7 @@ namespace DeviceManager.Repository.Interfaces
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter);
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<TEntity> GetAsyncAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties);
         TEntity GetById(object id);
         Task<TEntity> GetByIdAsync(object id);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);

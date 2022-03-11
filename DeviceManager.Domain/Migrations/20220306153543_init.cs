@@ -88,6 +88,26 @@ namespace DeviceManager.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DeviceType",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    DeleterUserId = table.Column<long>(type: "bigint", nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeviceType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -200,8 +220,8 @@ namespace DeviceManager.Domain.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    StatusId = table.Column<int>(type: "int", nullable: false),
-                    StatusId1 = table.Column<long>(type: "bigint", nullable: true),
+                    DeviceStatusId = table.Column<long>(type: "bigint", nullable: true),
+                    DeviceTypeId = table.Column<long>(type: "bigint", nullable: false),
                     Temperature = table.Column<double>(type: "float", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
@@ -215,11 +235,17 @@ namespace DeviceManager.Domain.Migrations
                 {
                     table.PrimaryKey("PK_Devices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Devices_DeviceStatus_StatusId1",
-                        column: x => x.StatusId1,
+                        name: "FK_Devices_DeviceStatus_DeviceStatusId",
+                        column: x => x.DeviceStatusId,
                         principalTable: "DeviceStatus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Devices_DeviceType_DeviceTypeId",
+                        column: x => x.DeviceTypeId,
+                        principalTable: "DeviceType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,8 +254,8 @@ namespace DeviceManager.Domain.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DeviceId = table.Column<long>(type: "bigint", nullable: true),
-                    StatusId = table.Column<long>(type: "bigint", nullable: true),
+                    DeviceId = table.Column<long>(type: "bigint", nullable: false),
+                    DeviceStatusId = table.Column<long>(type: "bigint", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
                     DeleterUserId = table.Column<long>(type: "bigint", nullable: true),
@@ -246,13 +272,13 @@ namespace DeviceManager.Domain.Migrations
                         column: x => x.DeviceId,
                         principalTable: "Devices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DeviceStatusLog_DeviceStatus_StatusId",
-                        column: x => x.StatusId,
+                        name: "FK_DeviceStatusLog_DeviceStatus_DeviceStatusId",
+                        column: x => x.DeviceStatusId,
                         principalTable: "DeviceStatus",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -295,9 +321,14 @@ namespace DeviceManager.Domain.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Devices_StatusId1",
+                name: "IX_Devices_DeviceStatusId",
                 table: "Devices",
-                column: "StatusId1");
+                column: "DeviceStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_DeviceTypeId",
+                table: "Devices",
+                column: "DeviceTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceStatusLog_DeviceId",
@@ -305,9 +336,9 @@ namespace DeviceManager.Domain.Migrations
                 column: "DeviceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeviceStatusLog_StatusId",
+                name: "IX_DeviceStatusLog_DeviceStatusId",
                 table: "DeviceStatusLog",
-                column: "StatusId");
+                column: "DeviceStatusId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -341,6 +372,9 @@ namespace DeviceManager.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeviceStatus");
+
+            migrationBuilder.DropTable(
+                name: "DeviceType");
         }
     }
 }
